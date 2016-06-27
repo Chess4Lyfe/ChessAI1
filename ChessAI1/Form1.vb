@@ -1,10 +1,13 @@
-﻿Public Class Form1
+﻿Imports System.Drawing.Drawing2D
+
+Public Class Form1
 
     Private F As Font = New Font("Segoe UI", 9)
+    Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
     Private theBoard As Board
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
+        theBoard = New Board
     End Sub
 
 
@@ -103,10 +106,10 @@
 
     End Class
 
-    Public brd As New Board
-
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
+            .SmoothingMode = SmoothingMode.AntiAlias
+
             'Constant declerations
             Const SQR As Integer = 60
             Const H_DISP As Integer = 30
@@ -119,12 +122,12 @@
             End Using
 
             'Draw white tiles
-            Using b_white As New SolidBrush(Color.FromArgb(254, 222, 137))
+            Using b_white As New SolidBrush(Color.FromArgb(237, 173, 123))
                 .FillRectangle(b_white, New Rectangle(H_DISP, V_DISP, SQR * 8, SQR * 8))
             End Using
 
             'Draw black tiles
-            Using b_black As New SolidBrush(Color.FromArgb(142, 81, 33))
+            Using b_black As New SolidBrush(Color.FromArgb(118, 69, 30))
                 For v = 1 To 8
                     For b = 0 To 3
                         .FillRectangle(b_black, New Rectangle((2 * (SQR * b)) + (SQR * (v Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR))
@@ -145,7 +148,44 @@
                 Next
             End Using
 
+            'Fix form size
             Me.Size = New Size((H_DISP) + (8 * SQR) + B_THICKNESS + 16, (2 * V_DISP) + (8 * SQR) + B_THICKNESS + 9)
+
+
+            'Draw pieces
+            For v = 0 To 7
+                For h = 0 To 7
+
+                    Dim piece_char As String
+                    Dim i As Integer = theBoard.board(h, v)
+                    If Math.Abs(i) = 1 Then
+                        piece_char = "♟"
+                    ElseIf Math.Abs(i) = 2 Then
+                        piece_char = "♞"
+                    ElseIf Math.Abs(i) = 3 Then
+                        piece_char = "♝"
+                    ElseIf Math.Abs(i) = 4 Then
+                        piece_char = "♜"
+                    ElseIf Math.Abs(i) = 5 Then
+                        piece_char = "♛"
+                    ElseIf Math.Abs(i) = 6 Then
+                        piece_char = "♚"
+                    End If
+                    If i < 0 Then
+                        Using gp As New GraphicsPath
+                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                            .FillPath(Brushes.Black, gp)
+                        End Using
+                    Else
+                        Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
+                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                            .DrawPath(p, gp)
+                            .FillPath(Brushes.White, gp)
+                        End Using
+                    End If
+                    piece_char = ""
+                Next
+            Next
         End With
 
     End Sub
