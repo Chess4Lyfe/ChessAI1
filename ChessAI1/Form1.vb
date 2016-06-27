@@ -105,11 +105,23 @@ Public Class Form1
     End Structure
 
 
+    Class Movements
+        Private movements As List(Of Tuple(Of iVector2, Integer))
+        Sub Add(x As Integer, y As Integer)
+            Dim tmp = New iVector2(x, y)
+            movements.Add(New Tuple(Of iVector2, Integer)(tmp, tmp.deref()))
+        End Sub
+
+        Sub New()
+            movements = New List(Of Tuple(Of iVector2, Integer))
+        End Sub
+    End Class
+
+
     Class cMove
 
-        Public Function Check(pos As iVector2) As List(Of Movement)
-            Dim retval As New List(Of Movement)
-            Dim target As iVector2
+        Public Function Check(pos As iVector2) As Movements
+            Dim retval As New Movements
             Dim type As Integer = pos.deref()
 
             Select Case Math.Abs(type)
@@ -118,30 +130,24 @@ Public Class Form1
                     If type > 0 Then
                         If pos.y = 6 Then
                             'white start
-                            target = New iVector2
-                            target.store(pos.x, 4)
-                            retval.Add(New Movement(target))
+                            retval.Add(pos.x, 4)
+
 
                         Else
                             ' Standard movement
                             If pos.y < 7 And Form1.board(pos.x, pos.y - 1) = 0 Then
-                                target = New iVector2
-                                target.store(pos.x, pos.y - 1)
-                                retval.Add(New Movement(target))
+                                retval.Add(pos.x, pos.y - 1)
 
                             End If
 
                         End If
 
                         If Form1.board(pos.x - 1, pos.y - 1) < 0 Then
-                            target = New iVector2
-                            target.store(pos.x - 1, pos.y - 1)
-                            retval.Add(New Movement(target))
-                        ElseIf Form1.board(pos.x + 1, pos.y - 1) < 0 Then
-                            target = New iVector2
-                            target.store(pos.x + 1, pos.y - 1)
-                            retval.Add(New Movement(target))
 
+                            retval.Add(pos.x - 1, pos.y - 1)
+
+                        ElseIf Form1.board(pos.x + 1, pos.y - 1) < 0 Then
+                            retval.Add(pos.x + 1, pos.y - 1)
 
                         End If
 
@@ -150,34 +156,32 @@ Public Class Form1
                         'Black
                         If pos.y = 1 Then
                             'black start
-                            target = New iVector2
-                            target.store(pos.x, 3)
-                            retval.Add(New Movement(target))
+
+                            retval.Add(pos.x, 3)
+
 
                         Else
                             ' Standard movement
                             If pos.y > 0 And Form1.board(pos.x, pos.y - 1) = 0 Then
-                                target = New iVector2
-                                target.store(pos.x, pos.y - 1)
-                                retval.Add(New Movement(target))
+
+                                retval.Add(pos.x, pos.y - 1)
+
 
                             End If
 
                         End If
 
+                        'capture
                         If Form1.board(pos.x - 1, pos.y + 1) > 0 Then
-                            target = New iVector2
-                            target.store(pos.x - 1, pos.y + 1)
-                            retval.Add(New Movement(target))
+
+                            retval.Add(pos.x - 1, pos.y + 1)
+
 
                         ElseIf Form1.board(pos.x + 1, pos.y + 1) > 0 Then
-                            target = New iVector2
-                            target.store(pos.x + 1, pos.y + 1)
-                            retval.Add(New Movement(target))
+
+                            retval.Add(pos.x + 1, pos.y + 1)
 
                         End If
-
-
 
                     End If
 
@@ -185,30 +189,32 @@ Public Class Form1
                     'knight
                     Dim positions(,) As Integer = New Integer(7, 1) {{1, 2}, {2, 1}, {-1, 2}, {2, -1}, {-1, -2}, {-2, -1}, {1, -2}, {-2, 1}}
                     For i As Integer = 0 To 7
-                        target = New iVector2
-                        target.store(positions(i, 0), positions(i, 1))
-                        retval.Add(New Movement(target))
+                        retval.Add(positions(i, 0), positions(i, 1))
                     Next
 
 
-                Case 3
-                    'bishop
+                Case 3, 5
+                    'bishop or queen
                     For i = 1 To 7
                         'up and left
-                        If pos.x - i <= -1 Or pos.y - i <= -1 Then
+                        If pos.x - i <= -1 Or pos.y - i <= -1 Or pos.deref() * type > 0 Then
+                            'same colour, can't go any further
+                            Exit For
 
+                        ElseIf pos.deref() * type < 0 Then
+                            ' different colour, save this spot then leave
                         Else
 
-                            target.store(pos.x - i, pos.y - i)
-                            retval.Add(New Movement(target))
+                            retval.Add(pos.x - i, pos.y - i)
+
                         End If
 
                         'up and right
                         If pos.x + i >= 8 Or pos.y - i <= -1 Then
 
                         Else
-                            target.store(pos.x + i, pos.y - i)
-                            retval.Add(New Movement(target))
+                            retval.Add(pos.x + i, pos.y - i)
+
 
                         End If
 
@@ -216,22 +222,21 @@ Public Class Form1
                         If pos.x - i <= -1 Or pos.y + i >= 8 Then
 
                         Else
-                            target.store(pos.x - i, pos.y + i)
-                            retval.Add(New Movement(target))
+                            retval.Add(pos.x - i, pos.y + i)
+
                         End If
 
                         'down and right
                         If pos.x + i >= 8 Or pos.y + i >= 8 Then
 
                         Else
-                            target.store(pos.x + i, pos.y + i)
-                            retval.Add(New Movement(target))
+                            retval.Add(pos.x + i, pos.y + i)
+
                         End If
                     Next
-                Case 4
-                    'rook
-                Case 5
-                    'queen
+                Case 4, 5
+                    'rook or queen
+
 
             End Select
             Return retval
