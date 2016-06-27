@@ -6,6 +6,52 @@
 
     End Sub
 
+
+    Class Board
+        ' x, y
+        ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
+        Private ornt As Integer ' 1= white on top, -1 = black on top
+
+        Public board As Integer(,)
+
+        Sub setup(ornt As Integer)
+            ' Pawns
+            For i = 0 To 7
+                board(i, 1) = ornt * 1
+                board(i, 6) = ornt * -1
+            Next
+
+            ' Knights
+            board(1, 0) = ornt * 2
+            board(6, 0) = ornt * 2
+            board(1, 7) = ornt * -2
+            board(6, 7) = ornt * -2
+
+            ' Bishops
+            board(2, 0) = ornt * 3
+            board(5, 0) = ornt * 3
+            board(2, 7) = ornt * -3
+            board(5, 7) = ornt * -3
+
+            ' Rooks
+            board(0, 0) = ornt * 4
+            board(0, 7) = ornt * 4
+            board(7, 0) = ornt * -4
+            board(7, 7) = ornt * -4
+
+            ' Kings and Queens
+            If ornt = 1 Then
+                board(0, 3) = 6
+                board(0, 4) = 5
+                board(7, 3) = -6
+                board(7, 4) = -5
+
+            End If
+
+        End Sub
+
+    End Class
+
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
             'Constant declerations
