@@ -78,7 +78,7 @@ Public Class Form1
                             retval.Add(target)
                             ReDim Preserve target(1)
                         End If
-                        target = {pos(0), pos(1) + 1}
+                        target = {pos(0), pos(1) - 1}
                         retval.Add(target)
                         ReDim Preserve target(1)
                         If Form1.board(pos(0) - 1, pos(1) - 1) < 0 Or Form1.board(pos(0) + 1, pos(1) - 1) > 0 Then
@@ -100,6 +100,43 @@ Public Class Form1
 
                 Case 3
                     'bishop
+                    For i = 1 To 7
+                        'up and left
+                        If pos(0) - i <= -1 Or pos(1) - i <= -1 Then
+
+                        Else
+                            target = {pos(0) - i, pos(1) - i}
+                            retval.Add(target)
+                            ReDim Preserve target(1)
+                        End If
+
+                        'up and right
+                        If pos(0) + i >= 8 Or pos(1) - i <= -1 Then
+
+                        Else
+                            target = {pos(0) + i, pos(1) - i}
+                            retval.Add(target)
+                            ReDim Preserve target(1)
+                        End If
+
+                        'down and left
+                        If pos(0) - i <= -1 Or pos(1) + i >= 8 Then
+
+                        Else
+                            target = {pos(0) - i, pos(1) + i}
+                            retval.Add(target)
+                            ReDim Preserve target(1)
+                        End If
+
+                        'down and right
+                        If pos(0) + i >= 8 Or pos(1) + i >= 8 Then
+
+                        Else
+                            target = {pos(0) + i, pos(1) + i}
+                            retval.Add(target)
+                            ReDim Preserve target(1)
+                        End If
+                    Next
                 Case 4
                     'rook
                 Case 5
@@ -117,7 +154,6 @@ Public Class Form1
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
-            .SmoothingMode = SmoothingMode.AntiAlias
 
             'Constant declerations
             Const SQR As Integer = 60
@@ -126,17 +162,17 @@ Public Class Form1
             Const B_THICKNESS As Integer = 30
 
             'Draw border
-            Using b_brown As New SolidBrush(Color.FromArgb(61, 36, 17))
+            Using b_brown As New SolidBrush(Color.FromArgb(21, 38, 41))
                 .FillRectangle(b_brown, New Rectangle(H_DISP - B_THICKNESS, V_DISP - B_THICKNESS, SQR * 8 + (2 * B_THICKNESS), SQR * 8 + (2 * B_THICKNESS)))
             End Using
 
             'Draw white tiles
-            Using b_white As New SolidBrush(Color.FromArgb(237, 173, 123))
+            Using b_white As New SolidBrush(Color.FromArgb(189, 204, 222))
                 .FillRectangle(b_white, New Rectangle(H_DISP, V_DISP, SQR * 8, SQR * 8))
             End Using
 
             'Draw black tiles
-            Using b_black As New SolidBrush(Color.FromArgb(118, 69, 30))
+            Using b_black As New SolidBrush(Color.FromArgb(82, 128, 139))
                 For v = 1 To 8
                     For b = 0 To 3
                         .FillRectangle(b_black, New Rectangle((2 * (SQR * b)) + (SQR * (v Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR))
@@ -145,7 +181,7 @@ Public Class Form1
             End Using
 
             'Draw column/row labels
-            Using b_gold As New SolidBrush(Color.FromArgb(212, 175, 55))
+            Using b_gold As New SolidBrush(Color.FromArgb(82, 129, 142))
                 For v = 0 To 7
                     Dim sz_n As Size = .MeasureString(v + 1, F).ToSize
                     Dim sz_l As Size = .MeasureString(Convert.ToChar(Convert.ToInt32("A"c) + v - 1).ToString().ToLower, F).ToSize
@@ -171,10 +207,10 @@ Public Class Form1
                     Debug.Print(v)
 
                     Dim i As Integer = Me.board(h, v)
-
+                    .SmoothingMode = SmoothingMode.AntiAlias
                     If i <> 0 Then piece_char = piece_array(Math.Abs(i) - 1)
                     If i < 0 Then
-                        Using gp As New GraphicsPath
+                        Using gp As New GraphicsPath()
                             gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
                             .FillPath(Brushes.Black, gp)
                         End Using
