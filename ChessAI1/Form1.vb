@@ -60,41 +60,83 @@ Public Class Form1
     End Sub
 
 
+    Class iVector2
+        Public x As Integer
+        Public y As Integer
+
+        Public Sub store(newX, newY)
+            x = newX
+            y = newY
+        End Sub
+
+        Public Function deref(u As iVector2) As Integer
+            If 0 <= u.x <= 7 And 0 <= u.y <= 7 Then
+                Return Form1.board(x, y)
+            Else
+                Return 1000 ' Out of range
+            End If
+
+        End Function
+    End Class
+
+    Structure Movement
+        Public Origin As iVector2
+        Public Target As iVector2
+        Sub New(org As iVector2, trg As iVector2)
+
+        End Sub
+    End Structure
+
 
     Class cMove
 
-        Public Function Check(pos() As Integer, type As Integer) As List(Of Integer())
-            Dim retval As New List(Of Integer())
-            Dim target(1) As Integer
-            Dim taking As Boolean
+        Public Function Check(pos As iVector2, type As Integer) As List(Of Integer())
+            Dim retval As List(Of Movement)
+            Dim target As iVector2
 
             Select Case Math.Abs(type)
                 Case 1
                     'pawn
                     If type > 0 Then
-                        If pos(1) = 6 Then
+                        If pos.y = 6 Then
                             'white start
-                            target = {pos(0), 4}
-                            retval.Add(target)
-                            ReDim Preserve target(1)
-                        End If
-                        target = {pos(0), pos(1) - 1}
-                        retval.Add(target)
-                        ReDim Preserve target(1)
-                        If Form1.board(pos(0) - 1, pos(1) - 1) < 0 Or Form1.board(pos(0) + 1, pos(1) - 1) > 0 Then
+                            target = New iVector2
+                            target.store(pos.x, 4)
+                            retval.Add(New Movement())
+
+
+                        Else
+                            ' Standard movement
+                            If pos.y < 7 And Form1.board(pos.x, pos.y - 1) = 0 Then
+                                target = New iVector2
+                                target.store(pos.x, pos.y - 1)
+                                retval.Add(target)
+                            End If
 
                         End If
-                    Else
-                        If pos(1) = 1 Then
-                            'black start
-                            target = {pos(0), 3}
-                            retval.Add(target)
-                            ReDim Preserve target(1)
+
+                        If Form1.board(pos.x - 1, pos.y - 1) < 0 Then
+                            target = {pos.x - 1, pos.y - 1}
+
+                        ElseIf Form1.board(pos.x + 1, pos.y - 1) < 0 Then
+                            target = {pos.x + 1, pos.y - 1}
+
+
                         End If
-                        target = {pos(0), pos(1) + 1}
+
+
                         retval.Add(target)
                         ReDim Preserve target(1)
+
+
+
+
+                    Else
+                        'Black
+
+
                     End If
+
                 Case 2
                     'knight
 
