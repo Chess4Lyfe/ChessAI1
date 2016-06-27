@@ -3,11 +3,17 @@
     Private F As Font = New Font("Segoe UI", 9)
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim theBoard As New Board(True)
 
     End Sub
 
-    Private moves As List(Of Tuple(Of Integer))
+    Private moves As ArrayList(Of Tuple(Of Integer))
+
+
+    Class Move
+        Private white As Boolean
+
+    End Class
+
 
 
     Class Board
