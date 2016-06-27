@@ -4,10 +4,13 @@ Public Class Form1
 
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
-    Private theBoard As Board
+    Private theBoard As New Board
+    Private Move As New cMove
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        theBoard = New Board
+        Debug.Print("======== DEBUG ========")
+        Dim str As String = String.Join(" ", Move.Check({0, 1}, -1)(1))
+        Debug.Print(str)
     End Sub
 
 
@@ -15,7 +18,7 @@ Public Class Form1
     Class cMove
         Public Function Check(pos() As Integer, type As Integer) As List(Of Integer())
             Dim retval As New List(Of Integer())
-            Dim finish(1) As Integer
+            Dim target(1) As Integer
             Dim i, j As Integer
 
             Select Case Math.Abs(type)
@@ -24,20 +27,30 @@ Public Class Form1
                     If type > 0 Then
                         If pos(1) = 6 Then
                             'white start
-                            finish(0) = pos(0)
-                            finish(1) = 4
-                            retval.Add(finish)
+                            target = {pos(0), 4}
+                            retval.Add(target)
+                            ReDim Preserve target(1)
                         End If
+                        target = {pos(0), pos(1) + 1}
+                        retval.Add(target)
+                        ReDim Preserve target(1)
+                        If theBoard(pos(0) - 1)(pos(1) - 1) Or theBoard(pos(0) + 1)(pos(1) - 1) Then
 
-
+                        End If
                     Else
-                        'black start
-                        If pos(1) = 2 Then
-
+                            If pos(1) = 1 Then
+                            'black start
+                            target = {pos(0), 3}
+                            retval.Add(target)
+                            ReDim Preserve target(1)
                         End If
+                        target = {pos(0), pos(1) + 1}
+                        retval.Add(target)
+                        ReDim Preserve target(1)
                     End If
                 Case 2
                     'knight
+
                 Case 3
                     'bishop
                 Case 4
@@ -46,6 +59,7 @@ Public Class Form1
                     'queen
 
             End Select
+            Return retval
         End Function
 
     End Class
