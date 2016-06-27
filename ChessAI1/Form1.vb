@@ -9,9 +9,40 @@
 
 
 
-    Class Move
-        Public Function Check(pos As Tuple(Of Integer), type As Integer) As Boolean
-            If (type > 0) Then
+    Class cMove
+        Public Function Check(pos() As Integer, type As Integer) As List(Of Integer())
+            Dim retval As New List(Of Integer())
+            Dim finish(1) As Integer
+            Dim i, j As Integer
+
+            Select Case Math.Abs(type)
+                Case 1
+                    'pawn
+                    If type > 0 Then
+                        If pos(1) = 6 Then
+                            'white start
+                            finish(0) = pos(0)
+                            finish(1) = 4
+                            retval.Add(finish)
+                        End If
+
+
+                    Else
+                        'black start
+                        If pos(1) = 2 Then
+
+                        End If
+                    End If
+                Case 2
+                    'knight
+                Case 3
+                    'bishop
+                Case 4
+                    'rook
+                Case 5
+                    'queen
+
+            End Select
         End Function
 
     End Class
@@ -22,63 +53,57 @@
 
     Class Board
         ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
-        Private ornt As Integer ' 1= white on top, -1 = black on top
 
         Public board(7, 7) As Integer
 
-        Sub setup(ornt As Integer)
+        Sub setup()
+            Dim i, j As Integer
+            For i = 0 To 7
+                For j = 0 To 7
+                    board(i, j) = 0
+                Next
+            Next
+
             ' Pawns
             For i = 0 To 7
-                board(i, 1) = ornt * 1
-                board(i, 6) = ornt * -1
+                board(i, 1) = -1
+                board(i, 6) = 1
             Next
 
             ' Knights
-            board(1, 0) = ornt * 2
-            board(6, 0) = ornt * 2
-            board(1, 7) = ornt * -2
-            board(6, 7) = ornt * -2
+            board(1, 0) = -2
+            board(6, 0) = -2
+            board(1, 7) = 2
+            board(6, 7) = 2
 
             ' Bishops
-            board(2, 0) = ornt * 3
-            board(5, 0) = ornt * 3
-            board(2, 7) = ornt * -3
-            board(5, 7) = ornt * -3
+            board(2, 0) = -3
+            board(5, 0) = -3
+            board(2, 7) = 3
+            board(5, 7) = 3
 
             ' Rooks
-            board(0, 0) = ornt * 4
-            board(0, 7) = ornt * 4
-            board(7, 0) = ornt * -4
-            board(7, 7) = ornt * -4
+            board(0, 0) = -4
+            board(0, 7) = -4
+            board(7, 0) = 4
+            board(7, 7) = 4
 
             ' Kings and Queens
-            If ornt = 1 Then
-                board(3, 0) = 6
-                board(4, 0) = 5
-                board(3, 7) = -6
-                board(4, 7) = -5
-            Else
-                board(0, 3) = -5
-                board(0, 4) = -6
-                board(7, 3) = 5
-                board(7, 4) = 6
-            End If
+            board(3, 0) = -6
+            board(4, 0) = -5
+            board(3, 7) = 6
+            board(4, 7) = 5
+
 
         End Sub
 
-        Sub New(whiteatop As Boolean)
-            If whiteatop Then
-                ornt = 1
-            Else
-                ornt = -1
-            End If
-
-            setup(ornt)
+        Sub New()
+            setup()
         End Sub
 
     End Class
 
-    Public brd As New Board(True)
+    Public brd As New Board
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
