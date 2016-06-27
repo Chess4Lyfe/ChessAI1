@@ -173,6 +173,7 @@ Public Class Form1
                         If pos.x - i <= -1 Or pos.y - i <= -1 Then
 
                         Else
+
                             target.store(pos.x - i, pos.y - i)
                             retval.Add(New Movement(pos, target, ))
                         End If
