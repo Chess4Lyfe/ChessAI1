@@ -3,6 +3,7 @@
     Private F As Font = New Font("Segoe UI", 9)
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim theBoard As New Board(True)
 
     End Sub
 
@@ -10,7 +11,6 @@
 
 
     Class Board
-        ' x, y
         ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
         Private ornt As Integer ' 1= white on top, -1 = black on top
 
@@ -54,6 +54,16 @@
                 board(7, 4) = 6
             End If
 
+        End Sub
+
+        Sub New(whiteatop As Boolean)
+            If whiteatop Then
+                ornt = 1
+            Else
+                ornt = -1
+            End If
+
+            setup(ornt)
         End Sub
 
     End Class
