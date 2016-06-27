@@ -93,7 +93,7 @@ Public Class Form1
 
     Class cMove
 
-        Public Function Check(pos As iVector2, type As Integer) As List(Of Integer())
+        Public Function Check(pos As iVector2, type As Integer) As List(Of Movement)
             Dim retval As New List(Of Movement)
             Dim target As iVector2
 
@@ -178,7 +178,7 @@ Public Class Form1
                         Else
 
                             target.store(pos.x - i, pos.y - i)
-                            retval.Add(New Movement(target, ))
+                            retval.Add(New Movement(target))
                         End If
 
                         'up and right
@@ -186,26 +186,24 @@ Public Class Form1
 
                         Else
                             target.store(pos.x + i, pos.y - i)
-                            retval.Add(target)
-                            ReDim Preserve target(1)
+                            retval.Add(New Movement(target))
+
                         End If
 
                         'down and left
                         If pos.x - i <= -1 Or pos.y + i >= 8 Then
 
                         Else
-                            target = {pos.x - i, pos.y + i}
-                            retval.Add(target)
-                            ReDim Preserve target(1)
+                            target.store(pos.x - i, pos.y + i)
+                            retval.Add(New Movement(target))
                         End If
 
                         'down and right
                         If pos.x + i >= 8 Or pos.y + i >= 8 Then
 
                         Else
-                            target = {pos.x + i, pos.y + i}
-                            retval.Add(target)
-                            ReDim Preserve target(1)
+                            target.store(pos.x + i, pos.y + i)
+                            retval.Add(New Movement(target))
                         End If
                     Next
                 Case 4
