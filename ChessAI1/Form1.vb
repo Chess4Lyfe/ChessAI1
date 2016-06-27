@@ -45,11 +45,6 @@
                     .DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString(), F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP - (B_THICKNESS / 2) - (sz_l.Height / 2))
                 Next
             End Using
-
-            'O shit waddup
-
-
-
         End With
     End Sub
 End Class
