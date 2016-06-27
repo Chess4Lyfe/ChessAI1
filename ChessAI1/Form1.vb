@@ -10,7 +10,17 @@ Public Class Form1
         theBoard = New Board(False)
     End Sub
 
-    Private moves As List(Of Tuple(Of Integer))
+
+
+    Class Move
+        Public Function Check(pos As Tuple(Of Integer), type As Integer) As Boolean
+            If (type > 0) Then
+        End Function
+
+    End Class
+
+
+
 
 
     Class Board
