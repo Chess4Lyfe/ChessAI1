@@ -6,6 +6,8 @@
 
     End Sub
 
+    Private moves As List(Of Tuple(Of Integer))
+
 
     Class Board
         ' x, y
@@ -45,7 +47,11 @@
                 board(0, 4) = 5
                 board(7, 3) = -6
                 board(7, 4) = -5
-
+            Else
+                board(0, 3) = -5
+                board(0, 4) = -6
+                board(7, 3) = 5
+                board(7, 4) = 6
             End If
 
         End Sub
