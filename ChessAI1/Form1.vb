@@ -105,10 +105,10 @@ Public Class Form1
             Dim target As iVector2
             Dim type As Integer = pos.deref()
 
-            Select Case Math.Abs(Type)
+            Select Case Math.Abs(type)
                 Case 1
                     'pawn
-                    If Type > 0 Then
+                    If type > 0 Then
                         If pos.y = 6 Then
                             'white start
                             target = New iVector2
