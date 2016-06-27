@@ -87,8 +87,8 @@ Public Class Form1
 
             ' Rooks
             board(0, 0) = -4
-            board(0, 7) = -4
-            board(7, 0) = 4
+            board(7, 0) = -4
+            board(0, 7) = 4
             board(7, 7) = 4
 
             ' Kings and Queens
