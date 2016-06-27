@@ -1,10 +1,10 @@
 ﻿Public Class Form1
 
     Private F As Font = New Font("Segoe UI", 9)
+    Private theBoard
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim theBoard As New Board(True)
-
+        theBoard = New Board(True)
     End Sub
 
     Private moves As List(Of Tuple(Of Integer))
@@ -67,6 +67,8 @@
         End Sub
 
     End Class
+
+    Public brd As New Board(True)
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
