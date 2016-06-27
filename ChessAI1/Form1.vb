@@ -50,10 +50,6 @@ Public Class Form1
 
     End Class
 
-
-
-
-
     Class Board
         ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
 
@@ -153,24 +149,17 @@ Public Class Form1
 
 
             'Draw pieces
+            Dim piece_array() As String = {"♟", "♞", "♝", "♜", "♛", "♚"}
+            Dim piece_char As String
+
             For v = 0 To 7
                 For h = 0 To 7
 
-                    Dim piece_char As String
+                    Debug.Print(v)
+
                     Dim i As Integer = theBoard.board(h, v)
-                    If Math.Abs(i) = 1 Then
-                        piece_char = "♟"
-                    ElseIf Math.Abs(i) = 2 Then
-                        piece_char = "♞"
-                    ElseIf Math.Abs(i) = 3 Then
-                        piece_char = "♝"
-                    ElseIf Math.Abs(i) = 4 Then
-                        piece_char = "♜"
-                    ElseIf Math.Abs(i) = 5 Then
-                        piece_char = "♛"
-                    ElseIf Math.Abs(i) = 6 Then
-                        piece_char = "♚"
-                    End If
+
+                    If i <> 0 Then piece_char = piece_array(Math.Abs(i) - 1)
                     If i < 0 Then
                         Using gp As New GraphicsPath
                             gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
