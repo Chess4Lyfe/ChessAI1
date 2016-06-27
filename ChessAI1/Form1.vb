@@ -82,9 +82,12 @@ Public Class Form1
     Structure Movement
         Public Origin As iVector2
         Public Target As iVector2
-        Sub New(org As iVector2, trg As iVector2)
+        Public taking As Boolean
+
+        Sub New(org As iVector2, trg As iVector2, Optional take As Boolean = False)
             Origin = org
             Target = trg
+            taking = take
         End Sub
     End Structure
 
@@ -92,7 +95,7 @@ Public Class Form1
     Class cMove
 
         Public Function Check(pos As iVector2, type As Integer) As List(Of Integer())
-            Dim retval As List(Of Movement)
+            Dim retval As New List(Of Movement)
             Dim target As iVector2
 
             Select Case Math.Abs(type)
@@ -103,31 +106,31 @@ Public Class Form1
                             'white start
                             target = New iVector2
                             target.store(pos.x, 4)
-                            retval.Add(New Movement(target, vbNull))
-
+                            retval.Add(New Movement(pos, target, False))
 
                         Else
                             ' Standard movement
                             If pos.y < 7 And Form1.board(pos.x, pos.y - 1) = 0 Then
                                 target = New iVector2
                                 target.store(pos.x, pos.y - 1)
-                                retval.Add(target)
+                                retval.Add(New Movement(pos, target, False))
+
                             End If
 
                         End If
 
                         If Form1.board(pos.x - 1, pos.y - 1) < 0 Then
-                            target = {pos.x - 1, pos.y - 1}
-
+                            target.store(pos.x - 1, pos.y - 1)
+                            retval.Add(New Movement(pos, target, True))
                         ElseIf Form1.board(pos.x + 1, pos.y - 1) < 0 Then
-                            target = {pos.x + 1, pos.y - 1}
+                            target.store(pos.x + 1, pos.y - 1)
+                            retval.Add(New Movement(pos, target, True))
 
 
                         End If
 
 
-                        retval.Add(target)
-                        ReDim Preserve target(1)
+
 
 
 
@@ -145,37 +148,36 @@ Public Class Form1
                     'bishop
                     For i = 1 To 7
                         'up and left
-                        If pos(0) - i <= -1 Or pos(1) - i <= -1 Then
+                        If pos.x - i <= -1 Or pos.y - i <= -1 Then
 
                         Else
-                            target = {pos(0) - i, pos(1) - i}
-                            retval.Add(target)
-                            ReDim Preserve target(1)
+                            target.store(pos.x - i, pos.y - i)
+                            retval.Add(New Movement(pos, target, ))
                         End If
 
                         'up and right
-                        If pos(0) + i >= 8 Or pos(1) - i <= -1 Then
+                        If pos.x + i >= 8 Or pos.y - i <= -1 Then
 
                         Else
-                            target = {pos(0) + i, pos(1) - i}
+                            target.store(pos.x + i, pos.y - i)
                             retval.Add(target)
                             ReDim Preserve target(1)
                         End If
 
                         'down and left
-                        If pos(0) - i <= -1 Or pos(1) + i >= 8 Then
+                        If pos.x - i <= -1 Or pos.y + i >= 8 Then
 
                         Else
-                            target = {pos(0) - i, pos(1) + i}
+                            target = {pos.x - i, pos.y + i}
                             retval.Add(target)
                             ReDim Preserve target(1)
                         End If
 
                         'down and right
-                        If pos(0) + i >= 8 Or pos(1) + i >= 8 Then
+                        If pos.x + i >= 8 Or pos.y + i >= 8 Then
 
                         Else
-                            target = {pos(0) + i, pos(1) + i}
+                            target = {pos.x + i, pos.y + i}
                             retval.Add(target)
                             ReDim Preserve target(1)
                         End If
