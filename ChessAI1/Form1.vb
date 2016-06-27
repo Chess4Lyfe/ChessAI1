@@ -69,8 +69,8 @@ Public Class Form1
             y = newY
         End Sub
 
-        Public Function deref(u As iVector2) As Integer
-            If 0 <= u.x <= 7 And 0 <= u.y <= 7 Then
+        Public Function deref() As Integer
+            If 0 <= x <= 7 And 0 <= y <= 7 Then
                 Return Form1.board(x, y)
             Else
                 Return 1000 ' Out of range
@@ -79,15 +79,14 @@ Public Class Form1
         End Function
     End Class
 
-    Structure Movement
-        Public Origin As iVector2
-        Public Target As iVector2
-        Public taking As Boolean
 
-        Sub New(org As iVector2, trg As iVector2, take As Boolean)
-            Origin = org
+    Structure Movement
+        Public Target As iVector2
+        Public taking As Integer
+
+        Sub New(trg As iVector2)
             Target = trg
-            taking = take
+            taking = trg.deref()
         End Sub
     End Structure
 
@@ -106,25 +105,27 @@ Public Class Form1
                             'white start
                             target = New iVector2
                             target.store(pos.x, 4)
-                            retval.Add(New Movement(pos, target, False))
+                            retval.Add(New Movement(target))
 
                         Else
                             ' Standard movement
                             If pos.y < 7 And Form1.board(pos.x, pos.y - 1) = 0 Then
                                 target = New iVector2
                                 target.store(pos.x, pos.y - 1)
-                                retval.Add(New Movement(pos, target, False))
+                                retval.Add(New Movement(target))
 
                             End If
 
                         End If
 
                         If Form1.board(pos.x - 1, pos.y - 1) < 0 Then
+                            target = New iVector2
                             target.store(pos.x - 1, pos.y - 1)
-                            retval.Add(New Movement(pos, target, True))
+                            retval.Add(New Movement(target))
                         ElseIf Form1.board(pos.x + 1, pos.y - 1) < 0 Then
+                            target = New iVector2
                             target.store(pos.x + 1, pos.y - 1)
-                            retval.Add(New Movement(pos, target, True))
+                            retval.Add(New Movement(target))
 
 
                         End If
@@ -133,29 +134,31 @@ Public Class Form1
                     Else
                         'Black
                         If pos.y = 1 Then
-                            'white start
+                            'black start
                             target = New iVector2
                             target.store(pos.x, 3)
-                            retval.Add(New Movement(pos, target, False))
+                            retval.Add(New Movement(target))
 
                         Else
                             ' Standard movement
                             If pos.y > 0 And Form1.board(pos.x, pos.y - 1) = 0 Then
                                 target = New iVector2
                                 target.store(pos.x, pos.y - 1)
-                                retval.Add(New Movement(pos, target, False))
+                                retval.Add(New Movement(target))
 
                             End If
 
                         End If
 
-                        If Form1.board(pos.x - 1, pos.y + 1) < 0 Then
+                        If Form1.board(pos.x - 1, pos.y + 1) > 0 Then
+                            target = New iVector2
                             target.store(pos.x - 1, pos.y + 1)
-                            retval.Add(New Movement(pos, target, True))
-                        ElseIf Form1.board(pos.x + 1, pos.y + 1) < 0 Then
-                            target.store(pos.x + 1, pos.y + 1)
-                            retval.Add(New Movement(pos, target, True))
+                            retval.Add(New Movement(target))
 
+                        ElseIf Form1.board(pos.x + 1, pos.y + 1) > 0 Then
+                            target = New iVector2
+                            target.store(pos.x + 1, pos.y + 1)
+                            retval.Add(New Movement(target))
 
                         End If
 
@@ -174,7 +177,7 @@ Public Class Form1
 
                         Else
                             target.store(pos.x - i, pos.y - i)
-                            retval.Add(New Movement(pos, target, ))
+                            retval.Add(New Movement(target, ))
                         End If
 
                         'up and right
