@@ -10,7 +10,7 @@
         With e.Graphics
             'Constant declerations
             Const SQR As Integer = 40
-            Const H_DISP As Integer = 80
+            Const H_DISP As Integer = 150
             Const V_DISP As Integer = 80
             Const B_THICKNESS As Integer = 30
 
@@ -39,11 +39,15 @@
                     Dim sz_n As Size = .MeasureString(v + 1, F).ToSize
                     Dim sz_l As Size = .MeasureString(Convert.ToChar(Convert.ToInt32("A"c) + v - 1).ToString(), F).ToSize
                     .DrawString(v + 1, F, b_gold, H_DISP - (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
-                    .DrawString(v + 1, F, b_gold, H_DISP - (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
+                    .DrawString(v + 1, F, b_gold, H_DISP + (8 * SQR) + (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
 
                     .DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString(), F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP + (SQR * 8) + (B_THICKNESS / 2) - (sz_l.Height / 2))
+                    .DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString(), F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP - (B_THICKNESS / 2) - (sz_l.Height / 2))
                 Next
             End Using
+
+
+
         End With
     End Sub
 End Class
