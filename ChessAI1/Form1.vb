@@ -1,18 +1,22 @@
 ﻿Public Class Form1
 
     Private F As Font = New Font("Segoe UI", 9)
+    Private theBoard As Board
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
     End Sub
 
-    Private moves As ArrayList(Of Tuple(Of Integer))
 
 
     Class Move
-        Private white As Boolean
+        Public Function Check(pos As Tuple(Of Integer), type As Integer) As Boolean
+            If (type > 0) Then
+        End Function
 
     End Class
+
+
 
 
 
@@ -20,7 +24,7 @@
         ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
         Private ornt As Integer ' 1= white on top, -1 = black on top
 
-        Public board As Integer(,)
+        Public board(7, 7) As Integer
 
         Sub setup(ornt As Integer)
             ' Pawns
@@ -49,10 +53,10 @@
 
             ' Kings and Queens
             If ornt = 1 Then
-                board(0, 3) = 6
-                board(0, 4) = 5
-                board(7, 3) = -6
-                board(7, 4) = -5
+                board(3, 0) = 6
+                board(4, 0) = 5
+                board(3, 7) = -6
+                board(4, 7) = -5
             Else
                 board(0, 3) = -5
                 board(0, 4) = -6
@@ -73,6 +77,8 @@
         End Sub
 
     End Class
+
+    Public brd As New Board(True)
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
