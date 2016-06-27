@@ -4,10 +4,56 @@ Public Class Form1
 
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
-    Private theBoard As New Board
     Private Move As New cMove
 
+    ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
+
+    Public board(7, 7) As Integer
+
+
+
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Initialise everthing
+        Dim i, j As Integer
+        For i = 0 To 7
+            For j = 0 To 7
+                board(i, j) = 0
+            Next
+        Next
+
+        ' Pawns
+        For i = 0 To 7
+            board(i, 1) = -1
+            board(i, 6) = 1
+        Next
+
+        ' Knights
+        board(1, 0) = -2
+        board(6, 0) = -2
+        board(1, 7) = 2
+        board(6, 7) = 2
+
+        ' Bishops
+        board(2, 0) = -3
+        board(5, 0) = -3
+        board(2, 7) = 3
+        board(5, 7) = 3
+
+        ' Rooks
+        board(0, 0) = -4
+        board(7, 0) = -4
+        board(0, 7) = 4
+        board(7, 7) = 4
+
+        ' Kings and Queens
+        board(3, 0) = -6
+        board(4, 0) = -5
+        board(3, 7) = 6
+        board(4, 7) = 5
+
+
+
         Debug.Print("======== DEBUG ========")
         Dim str As String = String.Join(" ", Move.Check({0, 1}, -1)(1))
         Debug.Print(str)
@@ -16,10 +62,11 @@ Public Class Form1
 
 
     Class cMove
+
         Public Function Check(pos() As Integer, type As Integer) As List(Of Integer())
             Dim retval As New List(Of Integer())
             Dim target(1) As Integer
-            Dim i, j As Integer
+            Dim taking As Boolean
 
             Select Case Math.Abs(type)
                 Case 1
@@ -34,11 +81,11 @@ Public Class Form1
                         target = {pos(0), pos(1) + 1}
                         retval.Add(target)
                         ReDim Preserve target(1)
-                        If theBoard(pos(0) - 1)(pos(1) - 1) Or theBoard(pos(0) + 1)(pos(1) - 1) Then
+                        If Form1.board(pos(0) - 1, pos(1) - 1) < 0 Or Form1.board(pos(0) + 1, pos(1) - 1) > 0 Then
 
                         End If
                     Else
-                            If pos(1) = 1 Then
+                        If pos(1) = 1 Then
                             'black start
                             target = {pos(0), 3}
                             retval.Add(target)
@@ -62,59 +109,11 @@ Public Class Form1
             Return retval
         End Function
 
-    End Class
-
-    Class Board
-        ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
-
-        Public board(7, 7) As Integer
-
-        Sub setup()
-            Dim i, j As Integer
-            For i = 0 To 7
-                For j = 0 To 7
-                    board(i, j) = 0
-                Next
-            Next
-
-            ' Pawns
-            For i = 0 To 7
-                board(i, 1) = -1
-                board(i, 6) = 1
-            Next
-
-            ' Knights
-            board(1, 0) = -2
-            board(6, 0) = -2
-            board(1, 7) = 2
-            board(6, 7) = 2
-
-            ' Bishops
-            board(2, 0) = -3
-            board(5, 0) = -3
-            board(2, 7) = 3
-            board(5, 7) = 3
-
-            ' Rooks
-            board(0, 0) = -4
-            board(7, 0) = -4
-            board(0, 7) = 4
-            board(7, 7) = 4
-
-            ' Kings and Queens
-            board(3, 0) = -6
-            board(4, 0) = -5
-            board(3, 7) = 6
-            board(4, 7) = 5
-
-
-        End Sub
-
-        Sub New()
-            setup()
-        End Sub
 
     End Class
+
+
+
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
@@ -171,7 +170,7 @@ Public Class Form1
 
                     Debug.Print(v)
 
-                    Dim i As Integer = theBoard.board(h, v)
+                    Dim i As Integer = Me.board(h, v)
 
                     If i <> 0 Then piece_char = piece_array(Math.Abs(i) - 1)
                     If i < 0 Then
