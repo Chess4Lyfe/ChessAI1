@@ -84,7 +84,7 @@ Public Class Form1
         Public Target As iVector2
         Public taking As Boolean
 
-        Sub New(org As iVector2, trg As iVector2, Optional take As Boolean = False)
+        Sub New(org As iVector2, trg As iVector2, take As Boolean)
             Origin = org
             Target = trg
             taking = take
@@ -130,13 +130,35 @@ Public Class Form1
                         End If
 
 
-
-
-
-
-
                     Else
                         'Black
+                        If pos.y = 1 Then
+                            'white start
+                            target = New iVector2
+                            target.store(pos.x, 3)
+                            retval.Add(New Movement(pos, target, False))
+
+                        Else
+                            ' Standard movement
+                            If pos.y > 0 And Form1.board(pos.x, pos.y - 1) = 0 Then
+                                target = New iVector2
+                                target.store(pos.x, pos.y - 1)
+                                retval.Add(New Movement(pos, target, False))
+
+                            End If
+
+                        End If
+
+                        If Form1.board(pos.x - 1, pos.y + 1) < 0 Then
+                            target.store(pos.x - 1, pos.y + 1)
+                            retval.Add(New Movement(pos, target, True))
+                        ElseIf Form1.board(pos.x + 1, pos.y + 1) < 0 Then
+                            target.store(pos.x + 1, pos.y + 1)
+                            retval.Add(New Movement(pos, target, True))
+
+
+                        End If
+
 
 
                     End If
