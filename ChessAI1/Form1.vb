@@ -54,9 +54,9 @@ Public Class Form1
 
 
 
-        Debug.Print("======== DEBUG ========")
-        Dim str As String = String.Join(" ", Move.Check({0, 1}, -1)(1))
-        Debug.Print(str)
+        'Debug.Print("======== DEBUG ========")
+        'Dim str As String = String.Join(" ", Move.Check({0, 1}, -1)(1))
+        'Debug.Print(str)
     End Sub
 
 
@@ -176,7 +176,6 @@ Public Class Form1
                         If pos.x - i <= -1 Or pos.y - i <= -1 Then
 
                         Else
-
                             target.store(pos.x - i, pos.y - i)
                             retval.Add(New Movement(target, ))
                         End If
