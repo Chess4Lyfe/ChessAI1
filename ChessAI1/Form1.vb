@@ -83,7 +83,8 @@ Public Class Form1
         Public Origin As iVector2
         Public Target As iVector2
         Sub New(org As iVector2, trg As iVector2)
-
+            Origin = org
+            Target = trg
         End Sub
     End Structure
 
@@ -102,7 +103,7 @@ Public Class Form1
                             'white start
                             target = New iVector2
                             target.store(pos.x, 4)
-                            retval.Add(New Movement())
+                            retval.Add(New Movement(target, vbNull))
 
 
                         Else
