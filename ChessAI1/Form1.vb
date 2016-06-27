@@ -1,6 +1,6 @@
 ﻿Public Class Form1
 
-    Private F As Font = New Font("Segoe UI", 12)
+    Private F As Font = New Font("Segoe UI", 9)
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -34,12 +34,16 @@
             End Using
 
             'Draw column/row labels
-            For v = 0 To 7
-                Dim sz_n As Size = .MeasureString(v + 1, F).ToSize
-                Dim sz_l As Size = .MeasureString(Convert.ToChar(Convert.ToInt32("A"c) + v - 1).ToString(), F).ToSize
-                .DrawString(v + 1, F, Brushes.White, H_DISP - (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
-                .DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString(), F, Brushes.White, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP + (SQR * 8) + (B_THICKNESS / 2) - (sz_l.Height / 2))
-            Next
+            Using b_gold As New SolidBrush(Color.FromArgb(212, 175, 55))
+                For v = 0 To 7
+                    Dim sz_n As Size = .MeasureString(v + 1, F).ToSize
+                    Dim sz_l As Size = .MeasureString(Convert.ToChar(Convert.ToInt32("A"c) + v - 1).ToString(), F).ToSize
+                    .DrawString(v + 1, F, b_gold, H_DISP - (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
+                    .DrawString(v + 1, F, b_gold, H_DISP - (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
+
+                    .DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString(), F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP + (SQR * 8) + (B_THICKNESS / 2) - (sz_l.Height / 2))
+                Next
+            End Using
         End With
     End Sub
 End Class
