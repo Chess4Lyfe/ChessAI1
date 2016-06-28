@@ -52,16 +52,24 @@ Public Class Form1
         board(3, 7) = 6
         board(4, 7) = 5
 
-
+        ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        '''''''''''''''''''' DEBUG CODE '''''''''''''''''''''''''''''''''''''''''''''''
 
         Debug.Print("======== DEBUG ========")
 
+        Dim tmp As Movements
+
         For i = 0 To 7
-            ' generate all pawns
-            MoveGen.GetMoves(New iVector2(i, 1))
-            board(i, 6) = 1
+            For j = 0 To 7
+                ' Find all moves for every square
+                tmp = MoveGen.GetMoves(New iVector2(j, i))
+                tmp.Print()
+            Next
         Next
 
+
+        '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        ''''''''''''''''''' END DEBUG CODE ''''''''''''''''''''''''''''''''
 
 
     End Sub
@@ -84,7 +92,7 @@ Public Class Form1
         End Sub
 
         Public Function deref() As Integer
-            If 0 <= x <= 7 AndAlso 0 <= y <= 7 Then
+            If 0 <= x AndAlso x <= 7 AndAlso 0 <= y AndAlso y <= 7 Then
                 Return Form1.board(x, y)
             Else
                 Return 1000 ' Out of range
@@ -92,11 +100,20 @@ Public Class Form1
 
         End Function
 
+        Public Sub Addition(v As iVector2)
+            x = x + v.x
+            y = y + v.y
+        End Sub
+
+        Public Function Plus(vx As Integer, vy As Integer) As iVector2
+            Return New iVector2(vx + x, vy + y)
+        End Function
+
     End Class
 
 
     Class Movements
-        Private movements As List(Of Tuple(Of iVector2, Integer))
+        Public movements As List(Of Tuple(Of iVector2, Integer))
         Sub Add(x As Integer, y As Integer)
             Dim tmp = New iVector2(x, y)
             movements.Add(New Tuple(Of iVector2, Integer)(tmp, tmp.deref()))
@@ -104,6 +121,13 @@ Public Class Form1
 
         Sub New()
             movements = New List(Of Tuple(Of iVector2, Integer))
+        End Sub
+
+        Sub Print()
+            For Each v In movements
+                Debug.Print("(" + v.Item1.x.ToString() + ", " + v.Item1.y.ToString() + ")")
+            Next
+
         End Sub
     End Class
 
@@ -122,7 +146,6 @@ Public Class Form1
                         If pos.y = 6 Then
                             'white start
                             retval.Add(pos.x, 4)
-
 
                         Else
                             ' Standard movement
@@ -147,17 +170,12 @@ Public Class Form1
                         'Black
                         If pos.y = 1 Then
                             'black start
-
                             retval.Add(pos.x, 3)
-
 
                         Else
                             ' Standard movement
                             If Form1.board(pos.x, pos.y + 1) = 0 Then
-
                                 retval.Add(pos.x, pos.y + 1)
-
-
                             End If
 
                         End If
@@ -176,11 +194,12 @@ Public Class Form1
 
                     End If
 
+
                 Case 2
                     'knight
                     Dim positions(,) As Integer = New Integer(7, 1) {{1, 2}, {2, 1}, {-1, 2}, {2, -1}, {-1, -2}, {-2, -1}, {1, -2}, {-2, 1}}
                     For i As Integer = 0 To 7
-                        retval.Add(positions(i, 0), positions(i, 1))
+                        retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
                     Next
 
 
@@ -188,41 +207,63 @@ Public Class Form1
                     'bishop or queen
                     For i = 1 To 7
                         'up and left
-                        If pos.x - i <= -1 Or pos.y - i <= -1 Or pos.deref() * type > 0 Then
+                        If pos.x - i <= -1 Or pos.y - i <= -1 Or pos.Plus(-i, -i).deref() * type > 0 Then
                             'same colour, can't go any further
                             Exit For
 
-                        ElseIf pos.deref() * type < 0 Then
-                            ' different colour, save this spot then leave
                         Else
 
                             retval.Add(pos.x - i, pos.y - i)
 
+                            If pos.Plus(-i, -i).deref() * type < 0 Then
+                                ' different colour, save this spot then leave
+                                Exit For
+                            End If
+
+
                         End If
 
                         'up and right
-                        If pos.x + i >= 8 Or pos.y - i <= -1 Then
+                        If pos.x + i >= 8 Or pos.y - i <= -1 Or pos.Plus(i, -i).deref() * type > 0 Then
+                            'same colour, can't go any further
+                            Exit For
+
 
                         Else
                             retval.Add(pos.x + i, pos.y - i)
 
+                            If pos.Plus(i, -i).deref() * type < 0 Then
+                                ' different colour, save this spot then leave
+                                Exit For
+                            End If
 
                         End If
 
                         'down and left
-                        If pos.x - i <= -1 Or pos.y + i >= 8 Then
+                        If pos.x - i <= -1 Or pos.y + i >= 8 Or pos.Plus(-i, i).deref() * type > 0 Then
+                            'same colour, can't go any further
+                            Exit For
 
                         Else
                             retval.Add(pos.x - i, pos.y + i)
 
+                            If pos.Plus(-i, i).deref() * type < 0 Then
+                                ' different colour, save this spot then leave
+                                Exit For
+                            End If
                         End If
 
                         'down and right
-                        If pos.x + i >= 8 Or pos.y + i >= 8 Then
+                        If pos.x + i >= 8 Or pos.y + i >= 8 Or pos.Plus(i, i).deref() * type > 0 Then
+                            'same colour, can't go any further
+                            Exit For
 
                         Else
                             retval.Add(pos.x + i, pos.y + i)
-
+                            If pos.Plus(i, i).deref() * type < 0 Then
+                                ' different colour, save this spot then leave
+                                Exit For
+                            End If
                         End If
                     Next
                 Case 4, 5
