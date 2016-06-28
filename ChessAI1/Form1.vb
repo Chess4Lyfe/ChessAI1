@@ -57,7 +57,8 @@ Public Class Form1
         Debug.Print("======== DEBUG ========")
 
         For i = 0 To 7
-            MoveGen.Check(New iVector2(i, 1))
+            ' generate all pawns
+            MoveGen.GetMoves(New iVector2(i, 1))
             board(i, 6) = 1
         Next
 
@@ -77,13 +78,13 @@ Public Class Form1
         End Sub
 
         Public Sub New(Optional newX As Integer = 1000, Optional newY As Integer = 1000)
-            If newX <> 1000 And newY <> 1000 Then
+            If newX <> 1000 AndAlso newY <> 1000 Then
                 store(newX, newY)
             End If
         End Sub
 
         Public Function deref() As Integer
-            If 0 <= x <= 7 And 0 <= y <= 7 Then
+            If 0 <= x <= 7 AndAlso 0 <= y <= 7 Then
                 Return Form1.board(x, y)
             Else
                 Return 1000 ' Out of range
@@ -92,17 +93,6 @@ Public Class Form1
         End Function
 
     End Class
-
-    ' A single 'move'
-    Structure Movement
-        Public Target As iVector2
-        Public taking As Integer
-
-        Sub New(trg As iVector2)
-            Target = trg
-            taking = trg.deref()
-        End Sub
-    End Structure
 
 
     Class Movements
@@ -120,14 +110,15 @@ Public Class Form1
 
     Class cMove
 
-        Public Function Check(pos As iVector2) As Movements
+        Public Function GetMoves(pos As iVector2) As Movements
             Dim retval As New Movements
             Dim type As Integer = pos.deref()
+            Debug.Print("Checking move (" + pos.x.ToString() + ", " + pos.y.ToString() + ")")
 
             Select Case Math.Abs(type)
                 Case 1
                     'pawn
-                    If type > 0 And pos.y > 0 Then
+                    If type > 0 AndAlso pos.y > 0 Then
                         If pos.y = 6 Then
                             'white start
                             retval.Add(pos.x, 4)
@@ -142,11 +133,11 @@ Public Class Form1
 
                         End If
 
-                        If pos.x > 0 And Form1.board(pos.x - 1, pos.y - 1) < 0 Then
+                        If pos.x > 0 AndAlso Form1.board(pos.x - 1, pos.y - 1) < 0 Then
 
                             retval.Add(pos.x - 1, pos.y - 1)
 
-                        ElseIf pos.x < 7 And Form1.board(pos.x + 1, pos.y - 1) < 0 Then
+                        ElseIf pos.x < 7 AndAlso Form1.board(pos.x + 1, pos.y - 1) < 0 Then
                             retval.Add(pos.x + 1, pos.y - 1)
 
                         End If
@@ -172,12 +163,12 @@ Public Class Form1
                         End If
 
                         'capture
-                        If pos.x > 0 And Form1.board(pos.x - 1, pos.y + 1) > 0 Then ' Throws outofrange, not sure why
+                        If pos.x > 0 AndAlso Form1.board(pos.x - 1, pos.y + 1) > 0 Then
 
                             retval.Add(pos.x - 1, pos.y + 1)
 
 
-                        ElseIf pos.x < 7 And Form1.board(pos.x + 1, pos.y + 1) > 0 Then
+                        ElseIf pos.x < 7 AndAlso Form1.board(pos.x + 1, pos.y + 1) > 0 Then
 
                             retval.Add(pos.x + 1, pos.y + 1)
 
@@ -300,7 +291,7 @@ Public Class Form1
             For v = 0 To 7
                 For h = 0 To 7
 
-                    Debug.Print(v)
+                    ' Debug.Print(v)
 
                     Dim i As Integer = Me.board(h, v)
                     .SmoothingMode = SmoothingMode.AntiAlias
