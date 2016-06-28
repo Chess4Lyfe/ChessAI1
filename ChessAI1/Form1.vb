@@ -4,7 +4,7 @@ Public Class Form1
 
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
-    Private Move As New cMove
+    Private MoveGen As New cMove
 
     ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
 
@@ -57,7 +57,7 @@ Public Class Form1
         Debug.Print("======== DEBUG ========")
 
         For i = 0 To 7
-            Move.Check(New iVector2(i, 1))
+            MoveGen.Check(New iVector2(i, 1))
             board(i, 6) = 1
         Next
 
