@@ -172,7 +172,7 @@ Public Class Form1
                         End If
 
                         'capture
-                        If pos.x > 0 And Form1.board(pos.x - 1, pos.y + 1) > 0 Then
+                        If pos.x > 0 And Form1.board(pos.x - 1, pos.y + 1) > 0 Then ' Throws outofrange, not sure why
 
                             retval.Add(pos.x - 1, pos.y + 1)
 
