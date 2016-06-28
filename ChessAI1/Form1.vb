@@ -127,7 +127,7 @@ Public Class Form1
             Select Case Math.Abs(type)
                 Case 1
                     'pawn
-                    If type > 0 Then
+                    If type > 0 And pos.y > 0 Then
                         If pos.y = 6 Then
                             'white start
                             retval.Add(pos.x, 4)
@@ -135,24 +135,24 @@ Public Class Form1
 
                         Else
                             ' Standard movement
-                            If pos.y < 7 And Form1.board(pos.x, pos.y - 1) = 0 Then
+                            If Form1.board(pos.x, pos.y - 1) = 0 Then
                                 retval.Add(pos.x, pos.y - 1)
 
                             End If
 
                         End If
 
-                        If Form1.board(pos.x - 1, pos.y - 1) < 0 Then
+                        If pos.x > 0 And Form1.board(pos.x - 1, pos.y - 1) < 0 Then
 
                             retval.Add(pos.x - 1, pos.y - 1)
 
-                        ElseIf Form1.board(pos.x + 1, pos.y - 1) < 0 Then
+                        ElseIf pos.x < 7 And Form1.board(pos.x + 1, pos.y - 1) < 0 Then
                             retval.Add(pos.x + 1, pos.y - 1)
 
                         End If
 
 
-                    Else
+                    ElseIf pos.y < 7 Then
                         'Black
                         If pos.y = 1 Then
                             'black start
@@ -162,9 +162,9 @@ Public Class Form1
 
                         Else
                             ' Standard movement
-                            If pos.y > 0 And Form1.board(pos.x, pos.y - 1) = 0 Then
+                            If Form1.board(pos.x, pos.y + 1) = 0 Then
 
-                                retval.Add(pos.x, pos.y - 1)
+                                retval.Add(pos.x, pos.y + 1)
 
 
                             End If
@@ -172,12 +172,12 @@ Public Class Form1
                         End If
 
                         'capture
-                        If Form1.board(pos.x - 1, pos.y + 1) > 0 Then
+                        If pos.x > 0 And Form1.board(pos.x - 1, pos.y + 1) > 0 Then
 
                             retval.Add(pos.x - 1, pos.y + 1)
 
 
-                        ElseIf Form1.board(pos.x + 1, pos.y + 1) > 0 Then
+                        ElseIf pos.x < 7 And Form1.board(pos.x + 1, pos.y + 1) > 0 Then
 
                             retval.Add(pos.x + 1, pos.y + 1)
 
