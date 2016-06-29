@@ -6,7 +6,7 @@ Public Class Form1
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
     Private MoveGen As New cMove
 
-    ' 1 = pawn, 2=knight, 3=bishop, 4=rook, 5=queen, 6=king
+    ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
     ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
@@ -15,7 +15,7 @@ Public Class Form1
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Board setup
+        ' Initialise everthing
         Dim i, j As Integer
 
 
@@ -44,15 +44,15 @@ Public Class Form1
         board(5, 7) = 3
 
         ' Rooks
-        board(0, 0) = -14
-        board(7, 0) = -14
-        board(0, 7) = 14
-        board(7, 7) = 14
+        board(0, 0) = -4
+        board(7, 0) = -4
+        board(0, 7) = 4
+        board(7, 7) = 4
 
         ' Kings and Queens
-        board(3, 0) = -16
+        board(3, 0) = -6
         board(4, 0) = -5
-        board(3, 7) = 16
+        board(3, 7) = 6
         board(4, 7) = 5
 
         '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -124,7 +124,7 @@ Public Class Form1
 
 
             'Draw pieces
-            Dim piece_array() As String = {"♟", "♞", "♝", "♜", "♛", "♚"}
+            Dim piece_array() As String = {"", "♟", "♞", "♝", "♜", "♛", "♚"}
             Dim piece_char As String
 
             For v = 0 To 7
@@ -134,7 +134,7 @@ Public Class Form1
 
                     Dim i As Integer = Me.board(h, v)
                     .SmoothingMode = SmoothingMode.AntiAlias
-                    If i <> 0 Then piece_char = piece_array(Math.Abs(i) - 1)
+                    piece_char = piece_array(Math.Abs(i))
                     If i < 0 Then
                         Using gp As New GraphicsPath()
                             gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
@@ -147,7 +147,6 @@ Public Class Form1
                             .FillPath(Brushes.White, gp)
                         End Using
                     End If
-                    piece_char = ""
                 Next
             Next
         End With

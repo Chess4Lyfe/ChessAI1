@@ -1,13 +1,15 @@
 ﻿Public Class cMove
-    Structure Castles
-        Public Q As Tuple(Of Boolean, Boolean)
-        Public K As Tuple(Of Boolean, Boolean)
-    End Structure
 
 
-    Private CanCastle As New Castles
+    Private CanCastle As New Dictionary(Of String, Boolean)
 
-
+    Sub New()
+        ' Set up all the castle flags
+        CanCastle.Add("WQ", True)
+        CanCastle.Add("WK", True)
+        CanCastle.Add("BQ", True)
+        CanCastle.Add("BK", True)
+    End Sub
 
     Public Function GetMoves(pos As iVector2) As Movements
         Dim retval As New Movements
@@ -144,8 +146,8 @@
 
             Case 4
                 ' rook castling
-                If CanCastle.K.Item1 Then
-
+                If pos.x = 0 AndAlso CanCastle("WK") Then
+                    retval.Add()
                 End If
 
             Case 4, 5
