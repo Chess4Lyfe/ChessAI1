@@ -242,31 +242,30 @@
                     retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
                 Next
 
-                ' King Castling
-                If pos.isAt(4, 7) Then
-                    If HasNotMoved("WK") Then
-                        retval.Add(6, 7)
-                    ElseIf HasNotMoved("WQ") Then
-                        retval.Add(2, 7)
-                    End If
-                ElseIf pos.isAt(4, 0) Then
-                    If HasNotMoved("BK") Then
+				' King Castling
+				If type > 0 Then
+					' White castling
+					If HasNotMoved("WK") AndAlso Form1.board(5, 7) = 0 AndAlso Form1.board(6, 7) = 0 Then
+						'White king-side caslting valid
+						retval.Add(6, 7)
+					End If
+					If HasNotMoved("WQ") AndAlso Form1.board(1, 7) = 0 AndAlso Form1.board(2, 7) = 0 AndAlso Form1.board(3, 7) = 0 Then
+						'White queen-side caslting valid
+						retval.Add(2, 7)
+					End If
+				Else
+					' Black castling
+					If HasNotMoved("BK") AndAlso Form1.board(1, 0) = 0 AndAlso Form1.board(2, 0) = 0 Then
+						'Black king-side caslting valid
+						retval.Add(1, 0)
+					End If
+					If HasNotMoved("BQ") AndAlso Form1.board(6, 0) = 0 AndAlso Form1.board(5, 0) = 0 AndAlso Form1.board(4, 0) = 0 Then
+						'Black queen-side caslting valid
+						retval.Add(5, 0)
+					End If
+				End If
 
-                    End If
-                End If
-                If pos.isAt(4, 7) AndAlso HasNotMoved("WK") Then
-
-
-                    retval.Add(2, 7)
-                ElseIf pos.isAt(0, 0) AndAlso HasNotMoved("BQ") Then
-                    retval.Add(0, 0)
-                ElseIf pos.isAt(7, 0) AndAlso HasNotMoved("BK") Then
-                    retval.Add(7, 0)
-                End If
-
-
-
-        End Select
+		End Select
         Return retval
     End Function
 
