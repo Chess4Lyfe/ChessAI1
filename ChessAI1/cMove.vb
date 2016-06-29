@@ -147,7 +147,7 @@
             Case 4
                 ' rook castling
                 If pos.x = 0 AndAlso CanCastle("WK") Then
-                    retval.Add()
+                    'retval.Add()
                 End If
 
             Case 4, 5

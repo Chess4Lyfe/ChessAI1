@@ -10,7 +10,7 @@ Public Class Form1
     ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
-
+    Public WhiteBottom As Boolean
     Const OFF_BOARD As Integer = 1000
 
 
@@ -135,17 +135,32 @@ Public Class Form1
                     Dim i As Integer = Me.board(h, v)
                     .SmoothingMode = SmoothingMode.AntiAlias
                     piece_char = piece_array(Math.Abs(i))
-                    If i < 0 Then
-                        Using gp As New GraphicsPath()
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
-                            .FillPath(Brushes.Black, gp)
-                        End Using
+                    If WhiteBottom Then
+                        If i < 0 Then
+                            Using gp As New GraphicsPath()
+                                gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                                .FillPath(Brushes.Black, gp)
+                            End Using
+                        Else
+                            Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
+                                gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                                .DrawPath(p, gp)
+                                .FillPath(Brushes.White, gp)
+                            End Using
+                        End If
                     Else
-                        Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
-                            .DrawPath(p, gp)
-                            .FillPath(Brushes.White, gp)
-                        End Using
+                        If i < 0 Then
+                            Using gp As New GraphicsPath()
+                                gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point(((7 - h) * SQR) + B_THICKNESS + 10, ((7 - v) * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                                .FillPath(Brushes.Black, gp)
+                            End Using
+                        Else
+                            Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
+                                gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point(((7 - h) * SQR) + B_THICKNESS + 10, ((7 - v) * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                                .DrawPath(p, gp)
+                                .FillPath(Brushes.White, gp)
+                            End Using
+                        End If
                     End If
                 Next
             Next
