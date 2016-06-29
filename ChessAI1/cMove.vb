@@ -1,4 +1,13 @@
-﻿Class cMove
+﻿Public Class cMove
+    Structure Castles
+        Public Q As Tuple(Of Boolean, Boolean)
+        Public K As Tuple(Of Boolean, Boolean)
+    End Structure
+
+
+    Private CanCastle As New Castles
+
+
 
     Public Function GetMoves(pos As iVector2) As Movements
         Dim retval As New Movements
@@ -140,86 +149,86 @@
                 End If
 
             Case 4, 5
-                    'rook or queen
-                    For i = 1 To 7
-                        ' up
-                        If pos.y - i <= -1 Or pos.Plus(0, -i).deref() * type > 0 Then
-                            'same colour, can't go any further
+                'rook or queen
+                For i = 1 To 7
+                    ' up
+                    If pos.y - i <= -1 Or pos.Plus(0, -i).deref() * type > 0 Then
+                        'same colour, can't go any further
+                        Exit For
+
+                    Else
+
+                        retval.Add(pos.x, pos.y - i)
+
+                        If pos.Plus(0, -i).deref() * type < 0 Then
+                            ' different colour, save this spot then leave
                             Exit For
-
-                        Else
-
-                            retval.Add(pos.x, pos.y - i)
-
-                            If pos.Plus(0, -i).deref() * type < 0 Then
-                                ' different colour, save this spot then leave
-                                Exit For
-                            End If
-
-
                         End If
 
-                        ' right
-                        If pos.x + i >= 8 Or pos.Plus(i, 0).deref() * type > 0 Then
-                            'same colour, can't go any further
+
+                    End If
+
+                    ' right
+                    If pos.x + i >= 8 Or pos.Plus(i, 0).deref() * type > 0 Then
+                        'same colour, can't go any further
+                        Exit For
+
+
+                    Else
+                        retval.Add(pos.x + i, pos.y)
+
+                        If pos.Plus(i, 0).deref() * type < 0 Then
+                            ' different colour, save this spot then leave
                             Exit For
-
-
-                        Else
-                            retval.Add(pos.x + i, pos.y)
-
-                            If pos.Plus(i, 0).deref() * type < 0 Then
-                                ' different colour, save this spot then leave
-                                Exit For
-                            End If
-
                         End If
 
-                        ' left
-                        If pos.x - i <= -1 Or pos.Plus(-i, 0).deref() * type > 0 Then
-                            'same colour, can't go any further
+                    End If
+
+                    ' left
+                    If pos.x - i <= -1 Or pos.Plus(-i, 0).deref() * type > 0 Then
+                        'same colour, can't go any further
+                        Exit For
+
+                    Else
+                        retval.Add(pos.x - i, pos.y)
+
+                        If pos.Plus(-i, 0).deref() * type < 0 Then
+                            ' different colour, save this spot then leave
                             Exit For
-
-                        Else
-                            retval.Add(pos.x - i, pos.y)
-
-                            If pos.Plus(-i, 0).deref() * type < 0 Then
-                                ' different colour, save this spot then leave
-                                Exit For
-                            End If
                         End If
+                    End If
 
-                        'down
-                        If pos.y + i >= 8 Or pos.Plus(0, i).deref() * type > 0 Then
-                            'same colour, can't go any further
+                    'down
+                    If pos.y + i >= 8 Or pos.Plus(0, i).deref() * type > 0 Then
+                        'same colour, can't go any further
+                        Exit For
+
+                    Else
+                        retval.Add(pos.x, pos.y + i)
+                        If pos.Plus(0, i).deref() * type < 0 Then
+                            ' different colour, save this spot then leave
                             Exit For
-
-                        Else
-                            retval.Add(pos.x, pos.y + i)
-                            If pos.Plus(0, i).deref() * type < 0 Then
-                                ' different colour, save this spot then leave
-                                Exit For
-                            End If
                         End If
-                    Next
+                    End If
+                Next
 
-                    Case 6, 16
-                    ' King
+            Case 6, 16
+                ' King
 
-                    ' standard moves
-                    Dim positions(,) As Integer = New Integer(7, 1) {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
-                    For i As Integer = 0 To 7
-                        retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
-                    Next
+                ' standard moves
+                Dim positions(,) As Integer = New Integer(7, 1) {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+                For i As Integer = 0 To 7
+                    retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
+                Next
 
                     ' TODO: Castling
                     ' fuck whoever came up with these stupid rules
-                    Case 16
-                    ' King castling
+            Case 16
+                ' King castling
 
 
 
-            End Select
+        End Select
         Return retval
     End Function
 
