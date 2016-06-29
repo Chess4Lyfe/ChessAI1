@@ -2,7 +2,7 @@
 
 
 Public Class iVector2
-    Const OFF_BOARD = 1000
+    Public Const OFF_BOARD = 1000
 
     Public x As Integer
     Public y As Integer
@@ -35,6 +35,10 @@ Public Class iVector2
 
     Public Function Plus(vx As Integer, vy As Integer) As iVector2
         Return New iVector2(vx + x, vy + y)
+    End Function
+
+    Public Function isAt(vx As Integer, vy As Integer)
+        Return vx = x AndAlso vy = y
     End Function
 
 End Class

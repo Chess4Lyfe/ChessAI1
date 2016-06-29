@@ -146,8 +146,14 @@
 
             Case 4
                 ' rook castling
-                If pos.x = 0 AndAlso CanCastle("WK") Then
-                    'retval.Add()
+                If pos.isAt(7, 7) AndAlso CanCastle("WK") Then
+                    retval.Add(7, 7)
+                ElseIf pos.isAt(0, 7) AndAlso CanCastle("WQ") Then
+                    retval.Add(0, 7)
+                ElseIf pos.isAt(0, 0) AndAlso CanCastle("BQ") Then
+                    retval.Add(0, 0)
+                ElseIf pos.isAt(7, 0) AndAlso CanCastle("BK") Then
+                    retval.Add(7, 0)
                 End If
 
             Case 4, 5
@@ -214,7 +220,7 @@
                     End If
                 Next
 
-            Case 6, 16
+            Case 6
                 ' King
 
                 ' standard moves
@@ -223,10 +229,16 @@
                     retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
                 Next
 
-                    ' TODO: Castling
-                    ' fuck whoever came up with these stupid rules
-            Case 16
-                ' King castling
+                ' King Castling
+                If pos.isAt(4, 7) AndAlso CanCastle("WK") Then
+                    retval.Add(, 7)
+                ElseIf pos.isAt(4, 7) AndAlso CanCastle("WQ") Then
+                    retval.Add(0, 7)
+                ElseIf pos.isAt(0, 0) AndAlso CanCastle("BQ") Then
+                    retval.Add(0, 0)
+                ElseIf pos.isAt(7, 0) AndAlso CanCastle("BK") Then
+                    retval.Add(7, 0)
+                End If
 
 
 
