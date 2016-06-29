@@ -6,7 +6,7 @@ Public Class Form1
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
     Private MoveGen As New cMove
 
-    ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
+    ' 1 = pawn, 2=knight, 3=bishop, 4=rook, 5=queen, 6=king
     ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
@@ -16,7 +16,7 @@ Public Class Form1
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Initialise everthing
+        ' Board setup
         Dim i, j As Integer
 
         canCastle.
