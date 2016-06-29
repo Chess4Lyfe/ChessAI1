@@ -2,8 +2,11 @@
     Private movements As List(Of Tuple(Of iVector2, Integer))
 
     Public Sub Add(x As Integer, y As Integer)
-        Dim tmp = New iVector2(x, y)
-        movements.Add(New Tuple(Of iVector2, Integer)(tmp, tmp.deref()))
+        Dim vec = New iVector2(x, y)
+        Dim tmp = vec.deref()
+        If (tmp <> iVector2.OFF_BOARD) Then
+            movements.Add(New Tuple(Of iVector2, Integer)(vec, vec.deref()))
+        End If
     End Sub
 
     Sub New()
