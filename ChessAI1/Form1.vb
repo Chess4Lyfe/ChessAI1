@@ -10,7 +10,7 @@ Public Class Form1
     ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
-
+    Public canCastle As New Castles
 
     Const OFF_BOARD As Integer = 1000
 
@@ -18,6 +18,9 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Initialise everthing
         Dim i, j As Integer
+
+        canCastle.
+
         For i = 0 To 7
             For j = 0 To 7
                 board(i, j) = 0
@@ -132,6 +135,12 @@ Public Class Form1
 
         End Sub
     End Class
+
+
+    Structure Castles
+        Public Q As Tuple(Of Boolean, Boolean)
+        Public K As Tuple(Of Boolean, Boolean)
+    End Structure
 
 
     Class cMove
@@ -269,10 +278,11 @@ Public Class Form1
                         End If
                     Next
 
-                Case 14
+                Case 4
                     ' rook castling
+                    If CanCastle.
 
-                Case 4, 14, 5
+                Case 4, 5
                     'rook or queen
                     For i = 1 To 7
                         ' up
