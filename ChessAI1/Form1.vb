@@ -113,7 +113,8 @@ Public Class Form1
 
 
     Class Movements
-        Public movements As List(Of Tuple(Of iVector2, Integer))
+        Private movements As List(Of Tuple(Of iVector2, Integer))
+
         Sub Add(x As Integer, y As Integer)
             Dim tmp = New iVector2(x, y)
             movements.Add(New Tuple(Of iVector2, Integer)(tmp, tmp.deref()))
