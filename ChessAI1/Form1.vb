@@ -279,12 +279,12 @@ Public Class Form1
                     If i <> 0 Then piece_char = piece_array(Math.Abs(i) - 1)
                     If i < 0 Then
                         Using gp As New GraphicsPath()
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 9, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
                             .FillPath(Brushes.Black, gp)
                         End Using
                     Else
                         Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 10, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((h * SQR) + B_THICKNESS + 9, (v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
                             .DrawPath(p, gp)
                             .FillPath(Brushes.White, gp)
                         End Using
