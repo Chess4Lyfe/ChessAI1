@@ -7,6 +7,7 @@ Public Class Form1
     Private MoveGen As New cMove
 
     ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
+    ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
 
@@ -42,15 +43,15 @@ Public Class Form1
         board(5, 7) = 3
 
         ' Rooks
-        board(0, 0) = -4
-        board(7, 0) = -4
-        board(0, 7) = 4
-        board(7, 7) = 4
+        board(0, 0) = -14
+        board(7, 0) = -14
+        board(0, 7) = 14
+        board(7, 7) = 14
 
         ' Kings and Queens
-        board(3, 0) = -6
+        board(3, 0) = -16
         board(4, 0) = -5
-        board(3, 7) = 6
+        board(3, 7) = 16
         board(4, 7) = 5
 
         '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -267,7 +268,11 @@ Public Class Form1
                             End If
                         End If
                     Next
-                Case 4, 5
+
+                Case 14
+                    ' rook castling
+
+                Case 4, 14, 5
                     'rook or queen
                     For i = 1 To 7
                         ' up
@@ -331,7 +336,7 @@ Public Class Form1
                         End If
                     Next
 
-                Case 6
+                Case 6, 16
                     ' King
 
                     ' standard moves
@@ -342,6 +347,8 @@ Public Class Form1
 
                     ' TODO: Castling
                     ' fuck whoever came up with these stupid rules
+                Case 16
+                    ' King castling
 
 
 
