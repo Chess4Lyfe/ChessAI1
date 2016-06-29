@@ -11,17 +11,20 @@
         HasNotMoved.Add("BK", True)
     End Sub
 
+    Private AllPossibleMovements(7, 7) As Movements
 
+    Public Sub UpdateMoves()
+        For i = 0 To 7
+            For j = 0 To 7
+                ' Find all moves for every square
+                AllPossibleMovements(i, j) = GetMoves(New iVector2(i, j))
+            Next
+        Next
 
+    End Sub
 
+    Public Function VerifyMove(pos As iVector2, target As iVector2, White As Boolean)
 
-    Public Function VerifyMove(pos As iVector2, target As iVector2)
-        Dim PossibleMoves As Movements = GetMoves(pos)
-        If PossibleMoves.Contains(target) Then
-
-        Else
-            Return False
-        End If
     End Function
 
     Public Function GetMoves(pos As iVector2) As Movements
