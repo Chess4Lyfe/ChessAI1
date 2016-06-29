@@ -85,7 +85,7 @@ Public Class Form1
             y = newY
         End Sub
 
-        Public Sub New(Optional newX As Integer = OFF_BOARD, Optional newY As Integer = OFF_BOARD)
+        Sub New(Optional newX As Integer = OFF_BOARD, Optional newY As Integer = OFF_BOARD)
             If newX <> OFF_BOARD AndAlso newY <> OFF_BOARD Then
                 store(newX, newY)
             End If
@@ -115,7 +115,7 @@ Public Class Form1
     Class Movements
         Private movements As List(Of Tuple(Of iVector2, Integer))
 
-        Sub Add(x As Integer, y As Integer)
+        Public Sub Add(x As Integer, y As Integer)
             Dim tmp = New iVector2(x, y)
             movements.Add(New Tuple(Of iVector2, Integer)(tmp, tmp.deref()))
         End Sub
@@ -124,7 +124,7 @@ Public Class Form1
             movements = New List(Of Tuple(Of iVector2, Integer))
         End Sub
 
-        Sub Print()
+        Public Sub Print()
             For Each v In movements
                 Debug.Print("(" + v.Item1.x.ToString() + ", " + v.Item1.y.ToString() + ")")
             Next
