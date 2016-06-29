@@ -231,7 +231,7 @@
 
                 ' King Castling
                 If pos.isAt(4, 7) AndAlso CanCastle("WK") Then
-                    retval.Add(, 7)
+                    'retval.Add(, 7)
                 ElseIf pos.isAt(4, 7) AndAlso CanCastle("WQ") Then
                     retval.Add(0, 7)
                 ElseIf pos.isAt(0, 0) AndAlso CanCastle("BQ") Then
