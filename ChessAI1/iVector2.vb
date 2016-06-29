@@ -33,6 +33,10 @@ Public Class iVector2
         y = y + v.y
     End Sub
 
+    Public Function Index() As Integer
+        Return 8 * x + y
+    End Function
+
     Public Function Plus(vx As Integer, vy As Integer) As iVector2
         Return New iVector2(vx + x, vy + y)
     End Function
