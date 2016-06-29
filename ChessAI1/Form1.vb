@@ -54,9 +54,15 @@ Public Class Form1
 
 
 
-        'Debug.Print("======== DEBUG ========")
-        'Dim str As String = String.Join(" ", Move.Check({0, 1}, -1)(1))
-        'Debug.Print(str)
+        Debug.Print("======== DEBUG ========")
+
+        For i = 0 To 7
+            Move.Check(New iVector2(i, 1))
+            board(i, 6) = 1
+        Next
+
+
+
     End Sub
 
 
@@ -64,7 +70,7 @@ Public Class Form1
         Public x As Integer
         Public y As Integer
 
-        Public Sub store(newX, newY)
+        Public Sub New(Optional newX As Integer = 0, Optional newY As Integer = 0)
             x = newX
             y = newY
         End Sub
@@ -77,6 +83,7 @@ Public Class Form1
             End If
 
         End Function
+
     End Class
 
 
@@ -93,9 +100,10 @@ Public Class Form1
 
     Class cMove
 
-        Public Function Check(pos As iVector2, type As Integer) As List(Of Movement)
+        Public Function Check(pos As iVector2) As List(Of Movement)
             Dim retval As New List(Of Movement)
             Dim target As iVector2
+            Dim type As Integer = pos.deref()
 
             Select Case Math.Abs(type)
                 Case 1
@@ -104,14 +112,14 @@ Public Class Form1
                         If pos.y = 6 Then
                             'white start
                             target = New iVector2
-                            target.store(pos.x, 4)
+                            target.New(pos.x, 4)
                             retval.Add(New Movement(target))
 
                         Else
                             ' Standard movement
                             If pos.y < 7 And Form1.board(pos.x, pos.y - 1) = 0 Then
                                 target = New iVector2
-                                target.store(pos.x, pos.y - 1)
+                                target.New(pos.x, pos.y - 1)
                                 retval.Add(New Movement(target))
 
                             End If
@@ -120,11 +128,11 @@ Public Class Form1
 
                         If Form1.board(pos.x - 1, pos.y - 1) < 0 Then
                             target = New iVector2
-                            target.store(pos.x - 1, pos.y - 1)
+                            target.New(pos.x - 1, pos.y - 1)
                             retval.Add(New Movement(target))
                         ElseIf Form1.board(pos.x + 1, pos.y - 1) < 0 Then
                             target = New iVector2
-                            target.store(pos.x + 1, pos.y - 1)
+                            target.New(pos.x + 1, pos.y - 1)
                             retval.Add(New Movement(target))
 
 
@@ -136,14 +144,14 @@ Public Class Form1
                         If pos.y = 1 Then
                             'black start
                             target = New iVector2
-                            target.store(pos.x, 3)
+                            target.New(pos.x, 3)
                             retval.Add(New Movement(target))
 
                         Else
                             ' Standard movement
                             If pos.y > 0 And Form1.board(pos.x, pos.y - 1) = 0 Then
                                 target = New iVector2
-                                target.store(pos.x, pos.y - 1)
+                                target.New(pos.x, pos.y - 1)
                                 retval.Add(New Movement(target))
 
                             End If
@@ -152,12 +160,12 @@ Public Class Form1
 
                         If Form1.board(pos.x - 1, pos.y + 1) > 0 Then
                             target = New iVector2
-                            target.store(pos.x - 1, pos.y + 1)
+                            target.New(pos.x - 1, pos.y + 1)
                             retval.Add(New Movement(target))
 
                         ElseIf Form1.board(pos.x + 1, pos.y + 1) > 0 Then
                             target = New iVector2
-                            target.store(pos.x + 1, pos.y + 1)
+                            target.New(pos.x + 1, pos.y + 1)
                             retval.Add(New Movement(target))
 
                         End If
@@ -176,6 +184,7 @@ Public Class Form1
                         If pos.x - i <= -1 Or pos.y - i <= -1 Then
 
                         Else
+
                             target.store(pos.x - i, pos.y - i)
                             retval.Add(New Movement(target))
                         End If
@@ -184,7 +193,7 @@ Public Class Form1
                         If pos.x + i >= 8 Or pos.y - i <= -1 Then
 
                         Else
-                            target.store(pos.x + i, pos.y - i)
+                            target.New(pos.x + i, pos.y - i)
                             retval.Add(New Movement(target))
 
                         End If
@@ -193,7 +202,7 @@ Public Class Form1
                         If pos.x - i <= -1 Or pos.y + i >= 8 Then
 
                         Else
-                            target.store(pos.x - i, pos.y + i)
+                            target.New(pos.x - i, pos.y + i)
                             retval.Add(New Movement(target))
                         End If
 
@@ -201,7 +210,7 @@ Public Class Form1
                         If pos.x + i >= 8 Or pos.y + i >= 8 Then
 
                         Else
-                            target.store(pos.x + i, pos.y + i)
+                            target.New(pos.x + i, pos.y + i)
                             retval.Add(New Movement(target))
                         End If
                     Next
