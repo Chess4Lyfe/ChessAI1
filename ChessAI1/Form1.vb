@@ -11,6 +11,7 @@ Public Class Form1
     Public board(7, 7) As Integer
 
 
+    Const OFF_BOARD As Integer = 1000
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -84,8 +85,8 @@ Public Class Form1
             y = newY
         End Sub
 
-        Public Sub New(Optional newX As Integer = 1000, Optional newY As Integer = 1000)
-            If newX <> 1000 AndAlso newY <> 1000 Then
+        Public Sub New(Optional newX As Integer = OFF_BOARD, Optional newY As Integer = OFF_BOARD)
+            If newX <> OFF_BOARD AndAlso newY <> OFF_BOARD Then
                 store(newX, newY)
             End If
         End Sub
@@ -94,7 +95,7 @@ Public Class Form1
             If 0 <= x AndAlso x <= 7 AndAlso 0 <= y AndAlso y <= 7 Then
                 Return Form1.board(x, y)
             Else
-                Return 1000 ' Out of range
+                Return OFF_BOARD ' Out of range
             End If
 
         End Function
@@ -267,6 +268,80 @@ Public Class Form1
                     Next
                 Case 4, 5
                     'rook or queen
+                    For i = 1 To 7
+                        ' up
+                        If pos.y - i <= -1 Or pos.Plus(0, -i).deref() * type > 0 Then
+                            'same colour, can't go any further
+                            Exit For
+
+                        Else
+
+                            retval.Add(pos.x, pos.y - i)
+
+                            If pos.Plus(0, -i).deref() * type < 0 Then
+                                ' different colour, save this spot then leave
+                                Exit For
+                            End If
+
+
+                        End If
+
+                        ' right
+                        If pos.x + i >= 8 Or pos.Plus(i, 0).deref() * type > 0 Then
+                            'same colour, can't go any further
+                            Exit For
+
+
+                        Else
+                            retval.Add(pos.x + i, pos.y)
+
+                            If pos.Plus(i, 0).deref() * type < 0 Then
+                                ' different colour, save this spot then leave
+                                Exit For
+                            End If
+
+                        End If
+
+                        ' left
+                        If pos.x - i <= -1 Or pos.Plus(-i, 0).deref() * type > 0 Then
+                            'same colour, can't go any further
+                            Exit For
+
+                        Else
+                            retval.Add(pos.x - i, pos.y)
+
+                            If pos.Plus(-i, 0).deref() * type < 0 Then
+                                ' different colour, save this spot then leave
+                                Exit For
+                            End If
+                        End If
+
+                        'down
+                        If pos.y + i >= 8 Or pos.Plus(0, i).deref() * type > 0 Then
+                            'same colour, can't go any further
+                            Exit For
+
+                        Else
+                            retval.Add(pos.x, pos.y + i)
+                            If pos.Plus(0, i).deref() * type < 0 Then
+                                ' different colour, save this spot then leave
+                                Exit For
+                            End If
+                        End If
+                    Next
+
+                Case 6
+                    ' King
+
+                    ' standard moves
+                    Dim positions(,) As Integer = New Integer(7, 1) {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+                    For i As Integer = 0 To 7
+                        retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
+                    Next
+
+                    ' TODO: Castling
+                    ' fuck whoever came up with these stupid rules
+
 
 
             End Select
