@@ -1,15 +1,28 @@
 ﻿Public Class cMove
 
 
-    Private CanCastle As New Dictionary(Of String, Boolean)
+    Private HasNotMoved As New Dictionary(Of String, Boolean)
 
     Sub New()
         ' Set up all the castle flags
-        CanCastle.Add("WQ", True)
-        CanCastle.Add("WK", True)
-        CanCastle.Add("BQ", True)
-        CanCastle.Add("BK", True)
+        HasNotMoved.Add("WQ", True)
+        HasNotMoved.Add("WK", True)
+        HasNotMoved.Add("BQ", True)
+        HasNotMoved.Add("BK", True)
     End Sub
+
+
+
+
+
+    Public Function VerifyMove(pos As iVector2, target As iVector2)
+        Dim PossibleMoves As Movements = GetMoves(pos)
+        If PossibleMoves.Contains(target) Then
+
+        Else
+            Return False
+        End If
+    End Function
 
     Public Function GetMoves(pos As iVector2) As Movements
         Dim retval As New Movements
@@ -146,13 +159,13 @@
 
             Case 4
                 ' rook castling
-                If pos.isAt(7, 7) AndAlso CanCastle("WK") Then
+                If pos.isAt(7, 7) AndAlso HasNotMoved("WK") Then
                     retval.Add(7, 7)
-                ElseIf pos.isAt(0, 7) AndAlso CanCastle("WQ") Then
+                ElseIf pos.isAt(0, 7) AndAlso HasNotMoved("WQ") Then
                     retval.Add(0, 7)
-                ElseIf pos.isAt(0, 0) AndAlso CanCastle("BQ") Then
+                ElseIf pos.isAt(0, 0) AndAlso HasNotMoved("BQ") Then
                     retval.Add(0, 0)
-                ElseIf pos.isAt(7, 0) AndAlso CanCastle("BK") Then
+                ElseIf pos.isAt(7, 0) AndAlso HasNotMoved("BK") Then
                     retval.Add(7, 0)
                 End If
 
@@ -230,13 +243,24 @@
                 Next
 
                 ' King Castling
-                If pos.isAt(4, 7) AndAlso CanCastle("WK") Then
-                    retval.Add(6, 7)
-                ElseIf pos.isAt(4, 7) AndAlso CanCastle("WQ") Then
+                If pos.isAt(4, 7) Then
+                    If HasNotMoved("WK") Then
+                        retval.Add(6, 7)
+                    ElseIf HasNotMoved("WQ") Then
+                        retval.Add(2, 7)
+                    End If
+                ElseIf pos.isAt(4, 0) Then
+                    If HasNotMoved("BK") Then
+
+                    End If
+                End If
+                If pos.isAt(4, 7) AndAlso HasNotMoved("WK") Then
+
+
                     retval.Add(2, 7)
-                ElseIf pos.isAt(0, 0) AndAlso CanCastle("BQ") Then
+                ElseIf pos.isAt(0, 0) AndAlso HasNotMoved("BQ") Then
                     retval.Add(0, 0)
-                ElseIf pos.isAt(7, 0) AndAlso CanCastle("BK") Then
+                ElseIf pos.isAt(7, 0) AndAlso HasNotMoved("BK") Then
                     retval.Add(7, 0)
                 End If
 
