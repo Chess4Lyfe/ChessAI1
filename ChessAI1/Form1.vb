@@ -35,17 +35,7 @@ Public Class Form1
 
         ' Initialise everthing
         DoubleBuffered = True
-        Dim i, j, a, b, c As Integer
-
-        If WhiteBottom Then
-            a = -1
-            b = 5
-            c = 6
-        Else
-            a = 1
-            b = 6
-            c = 5
-        End If
+        Dim i, j As Integer
 
         For i = 0 To 7
             For j = 0 To 7
@@ -55,33 +45,35 @@ Public Class Form1
 
         ' Pawns
         For i = 0 To 7
-            board(i, 1) = -1 * a
-            board(i, 6) = 1 * a
+            board(i, 1) = -1
+            board(i, 6) = 1
         Next
 
         ' Knights
-        board(1, 0) = -2 * a
-        board(6, 0) = -2 * a
-        board(1, 7) = 2 * a
-        board(6, 7) = 2 * a
+        board(1, 0) = -2
+        board(6, 0) = -2
+        board(1, 7) = 2
+        board(6, 7) = 2
 
         ' Bishops
-        board(2, 0) = -3 * a
-        board(5, 0) = -3 * a
-        board(2, 7) = 3 * a
-        board(5, 7) = 3 * a
+        board(2, 0) = -3
+        board(5, 0) = -3
+        board(2, 7) = 3
+        board(5, 7) = 3
 
         ' Rooks
-        board(0, 0) = -4 * a
-        board(7, 0) = -4 * a
-        board(0, 7) = 4 * a
-        board(7, 7) = 4 * a
+        board(0, 0) = -4
+        board(7, 0) = -4
+        board(0, 7) = 4
+        board(7, 7) = 4
 
-        ' Kings and Queens
-        board(4, 0) = -b * a
-        board(3, 0) = -c * a
-        board(4, 7) = b * a
-        board(3, 7) = c * a
+        ' Queens
+        board(3, 0) = -5
+        board(3, 7) = 5
+
+        ' Kings
+        board(4, 7) = 6
+        board(4, 0) = -6
 
         '''''''''''''''''''''''''''''''''''''''''''''''''''
         '''''''''''''''''''' DEBUG CODE ''''''''''''''''''' 
