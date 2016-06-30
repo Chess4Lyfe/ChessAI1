@@ -72,6 +72,8 @@ Public Class Form1
 
         Dim tmp As Movements
 
+        MoveGen.UpdateMoves()
+
         For i = 0 To 7
             For j = 0 To 7
                 ' Find all moves for every square

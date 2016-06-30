@@ -19,7 +19,7 @@ Public Class cMove
         For i = 0 To 7
             For j = 0 To 7
                 ' Find all moves for every square
-                AllPossibleMovements(i, j) = GetMoves(New iVector2(i, j))
+                AllPossibleMovements(i, j) = CalculateMoves(New iVector2(i, j))
             Next
         Next
 
@@ -30,6 +30,14 @@ Public Class cMove
     End Function
 
     Public Function GetMoves(pos As iVector2) As Movements
+        Return AllPossibleMovements(pos.x, pos.y)
+    End Function
+
+    Public Function GetMoves(x As Integer, y As Integer) As Movements
+        Return AllPossibleMovements(x, y)
+    End Function
+
+    Private Function CalculateMoves(pos As iVector2) As Movements
         Dim retval As New Movements
         Dim type As Integer = pos.deref()
         Debug.Print("Checking move {0}{1}", Form1.xmaps(pos.x), Form1.ymaps(pos.y))
@@ -42,14 +50,13 @@ Public Class cMove
                         'white start
                         retval.Add(pos.x, 4)
 
-                    Else
-                        ' Standard movement
-                        If Form1.board(pos.x, pos.y - 1) = 0 Then
-                            retval.Add(pos.x, pos.y - 1)
-
-                        End If
-
                     End If
+                    ' Standard movement
+                    If Form1.board(pos.x, pos.y - 1) = 0 Then
+                        retval.Add(pos.x, pos.y - 1)
+                    End If
+
+
 
                     If pos.x > 0 AndAlso Form1.board(pos.x - 1, pos.y - 1) < 0 Then
 
@@ -67,13 +74,13 @@ Public Class cMove
                         'black start
                         retval.Add(pos.x, 3)
 
-                    Else
-                        ' Standard movement
-                        If Form1.board(pos.x, pos.y + 1) = 0 Then
-                            retval.Add(pos.x, pos.y + 1)
-                        End If
-
                     End If
+                    ' Standard movement
+                    If Form1.board(pos.x, pos.y + 1) = 0 Then
+                        retval.Add(pos.x, pos.y + 1)
+                    End If
+
+
 
                     'capture
                     If pos.x > 0 AndAlso Form1.board(pos.x - 1, pos.y + 1) > 0 Then
@@ -94,7 +101,11 @@ Public Class cMove
                 'horsey
                 Dim positions(,) As Integer = New Integer(7, 1) {{1, 2}, {2, 1}, {-1, 2}, {2, -1}, {-1, -2}, {-2, -1}, {1, -2}, {-2, 1}}
                 For i As Integer = 0 To 7
-                    retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
+                    Dim v = New iVector2(positions(i, 0), positions(i, 1))
+                    v.Addition(pos)
+                    If (v.deref() * type <= 0) Then
+                        retval.Add(v)
+                    End If
                 Next
 
 
