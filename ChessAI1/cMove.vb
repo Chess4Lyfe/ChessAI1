@@ -42,14 +42,13 @@ Public Class cMove
                         'white start
                         retval.Add(pos.x, 4)
 
-                    Else
-                        ' Standard movement
-                        If Form1.board(pos.x, pos.y - 1) = 0 Then
-                            retval.Add(pos.x, pos.y - 1)
-
-                        End If
-
                     End If
+                    ' Standard movement
+                    If Form1.board(pos.x, pos.y - 1) = 0 Then
+                        retval.Add(pos.x, pos.y - 1)
+                    End If
+
+
 
                     If pos.x > 0 AndAlso Form1.board(pos.x - 1, pos.y - 1) < 0 Then
 
@@ -67,13 +66,13 @@ Public Class cMove
                         'black start
                         retval.Add(pos.x, 3)
 
-                    Else
-                        ' Standard movement
-                        If Form1.board(pos.x, pos.y + 1) = 0 Then
-                            retval.Add(pos.x, pos.y + 1)
-                        End If
-
                     End If
+                    ' Standard movement
+                    If Form1.board(pos.x, pos.y + 1) = 0 Then
+                        retval.Add(pos.x, pos.y + 1)
+                    End If
+
+
 
                     'capture
                     If pos.x > 0 AndAlso Form1.board(pos.x - 1, pos.y + 1) > 0 Then
@@ -94,7 +93,11 @@ Public Class cMove
                 'knight
                 Dim positions(,) As Integer = New Integer(7, 1) {{1, 2}, {2, 1}, {-1, 2}, {2, -1}, {-1, -2}, {-2, -1}, {1, -2}, {-2, 1}}
                 For i As Integer = 0 To 7
-                    retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
+                    Dim v = New iVector2(positions(i, 0), positions(i, 1))
+                    v.Addition(pos)
+                    If (v.deref() * type <= 0) Then
+                        retval.Add(v)
+                    End If
                 Next
 
 

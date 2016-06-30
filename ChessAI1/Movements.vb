@@ -70,7 +70,14 @@ Public Class Movements
     Public Sub Add(x As Integer, y As Integer)
         Dim vec = New iVector2(x, y)
         Dim tmp = vec.deref()
-        If (tmp <> iVector2.OFF_BOARD) Then
+        If tmp <> iVector2.OFF_BOARD Then
+            movements.Add(New MoveData(vec, tmp))
+        End If
+    End Sub
+
+    Public Sub Add(vec As iVector2)
+        Dim tmp = vec.deref()
+        If tmp <> iVector2.OFF_BOARD Then
             movements.Add(New MoveData(vec, tmp))
         End If
     End Sub
