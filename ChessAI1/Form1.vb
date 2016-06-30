@@ -11,6 +11,7 @@ Public Class Form1
     '''''''''''''''''DEBUG CODE''''''''''''''''''''''''''''
     Public xmaps As String() = {"a", "b", "c", "d", "e", "f", "g", "h"}
     Public ymaps As String() = {"1", "2", "3", "4", "5", "6", "7", "8"}
+
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
@@ -59,16 +60,23 @@ Public Class Form1
         board(0, 7) = 4
         board(7, 7) = 4
 
-        ' Kings and Queens
-        board(3, 0) = -6
+        ' Queens
         board(4, 0) = -5
-        board(3, 7) = 6
         board(4, 7) = 5
+
+
+
+        ' Kings
+        board(3, 0) = -6
+        board(3, 7) = 6
+
 
         '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         '''''''''''''''''''' DEBUG CODE '''''''''''''''''''''''''''''''''''
 
         Debug.Print("======== DEBUG ========")
+
+        xmaps.Reverse()
 
         Dim tmp As Movements
 
