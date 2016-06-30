@@ -40,7 +40,7 @@ Public Class cMove
     Private Function CalculateMoves(pos As iVector2) As Movements
         Dim retval As New Movements
         Dim type As Integer = pos.deref()
-        Debug.Print("Checking move {0}{1}", Form1.xmaps(pos.x), Form1.ymaps(pos.y))
+
 
         Select Case Math.Abs(type)
             Case 1
