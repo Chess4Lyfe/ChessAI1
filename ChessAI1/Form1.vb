@@ -88,7 +88,7 @@ Public Class Form1
 
         Debug.Print("======== DEBUG ========")
 
-        xmaps.Reverse()
+
 
         Dim tmp As Movements
 
@@ -97,7 +97,7 @@ Public Class Form1
         For i = 0 To 7
             For j = 0 To 7
                 ' Find all moves for every square
-                Debug.Print("Checking move {0}{1}", xmaps(j), ymaps(i))
+                Debug.Print("Checking move {0}{1}", xmaps(7 - j), ymaps(7 - i))
                 tmp = MoveGen.GetMoves(New iVector2(j, i))
                 tmp.Print()
             Next
