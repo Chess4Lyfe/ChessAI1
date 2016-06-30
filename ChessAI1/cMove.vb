@@ -128,7 +128,9 @@ Public Class cMove
 
 
                     End If
+                Next
 
+                For i = 1 To 7
                     'up and right
                     If pos.x + i >= 8 Or pos.y - i <= -1 Or pos.Plus(i, -i).deref() * type > 0 Then
                         'same colour, can't go any further
@@ -144,7 +146,9 @@ Public Class cMove
                         End If
 
                     End If
+                Next
 
+                For i = 1 To 7
                     'down and left
                     If pos.x - i <= -1 Or pos.y + i >= 8 Or pos.Plus(-i, i).deref() * type > 0 Then
                         'same colour, can't go any further
@@ -158,7 +162,9 @@ Public Class cMove
                             Exit For
                         End If
                     End If
+                Next
 
+                For i = 1 To 7
                     'down and right
                     If pos.x + i >= 8 Or pos.y + i >= 8 Or pos.Plus(i, i).deref() * type > 0 Then
                         'same colour, can't go any further
@@ -208,7 +214,9 @@ Public Class cMove
 
 
                     End If
+                Next
 
+                For i = 1 To 7
                     ' right
                     If pos.x + i >= 8 Or pos.Plus(i, 0).deref() * type > 0 Then
                         'same colour, can't go any further
@@ -224,7 +232,9 @@ Public Class cMove
                         End If
 
                     End If
+                Next
 
+                For i = 1 To 7
                     ' left
                     If pos.x - i <= -1 Or pos.Plus(-i, 0).deref() * type > 0 Then
                         'same colour, can't go any further
@@ -238,7 +248,9 @@ Public Class cMove
                             Exit For
                         End If
                     End If
+                Next
 
+                For i = 1 To 7
                     'down
                     If pos.y + i >= 8 Or pos.Plus(0, i).deref() * type > 0 Then
                         'same colour, can't go any further
