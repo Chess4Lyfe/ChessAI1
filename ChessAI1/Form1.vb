@@ -6,6 +6,11 @@ Public Class Form1
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
     Private MoveGen As New cMove
 
+    'Constant declerations
+    Const SQR As Integer = 60
+    Const H_DISP As Integer = 30
+    Const V_DISP As Integer = 30
+    Const B_THICKNESS As Integer = 30
 
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '''''''''''''''''DEBUG CODE''''''''''''''''''''''''''''
@@ -20,11 +25,14 @@ Public Class Form1
     ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
-    Public WhiteBottom As Boolean
+    Public WhiteBottom As Boolean = True
     Const OFF_BOARD As Integer = 1000
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'Fix form size
+        Me.Size = New Size((H_DISP) + (8 * SQR) + B_THICKNESS + 16, (2 * V_DISP) + (8 * SQR) + B_THICKNESS + 9)
+
         ' Initialise everthing
         DoubleBuffered = True
         Dim i, j As Integer
@@ -102,12 +110,6 @@ Public Class Form1
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
 
-            'Constant declerations
-            Const SQR As Integer = 60
-            Const H_DISP As Integer = 30
-            Const V_DISP As Integer = 30
-            Const B_THICKNESS As Integer = 30
-
             'Draw border
             Using b_brown As New SolidBrush(Color.FromArgb(21, 38, 41))
                 .FillRectangle(b_brown, New Rectangle(H_DISP - B_THICKNESS, V_DISP - B_THICKNESS, SQR * 8 + (2 * B_THICKNESS), SQR * 8 + (2 * B_THICKNESS)))
@@ -120,26 +122,8 @@ Public Class Form1
                         Dim r As New Rectangle((2 * (SQR * b)) + (SQR * ((v + 1) Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR)
                         'check if mouse is hovering over rendered square
                         If r.Contains(PointToClient(MousePosition)) Then
-                            ' if player white, piece is white and mouse is hovering, change square color
-                            If WhiteBottom = True Then
-                                If board(b * 2, v - 1) > 0 Then
-                                    .FillRectangle(Brushes.Aqua, r)
-                                Else
-                                    .FillRectangle(b_white, r)
-                                End If
-                            Else
-                                If board(b * 2, v - 1) < 0 Then
-                                    .FillRectangle(Brushes.Aqua, r)
-                                Else
-                                    .FillRectangle(b_white, r)
-                                End If
-                            End If
-                        Else
-                            .FillRectangle(b_white, r)
                         End If
-                        If board(b * 2, v - 1) = 0 Then
-                            .FillRectangle(b_white, r)
-                        End If
+                        .FillRectangle(b_white, r)
                     Next
                 Next
             End Using
@@ -150,25 +134,8 @@ Public Class Form1
                     For b = 0 To 3
                         Dim r As New Rectangle((2 * (SQR * b)) + (SQR * (v Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR)
                         If r.Contains(PointToClient(MousePosition)) Then
-                            If WhiteBottom = True Then
-                                If board(b * 2, v - 1) > 0 Then
-                                    .FillRectangle(Brushes.Aqua, r)
-                                Else
-                                    .FillRectangle(b_black, r)
-                                End If
-                            Else
-                                If board(b * 2, v - 1) < 0 Then
-                                    .FillRectangle(Brushes.Aqua, r)
-                                Else
-                                    .FillRectangle(b_black, r)
-                                End If
-                            End If
-                        Else
-                            .FillRectangle(b_black, r)
                         End If
-                        If board(b * 2, v - 1) = 0 Then
-                            .FillRectangle(b_black, r)
-                        End If
+                        .FillRectangle(b_black, r)
                     Next
                 Next
             End Using
@@ -185,10 +152,6 @@ Public Class Form1
                     .DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString().ToLower, F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP - (B_THICKNESS / 2) - (sz_l.Height / 2))
                 Next
             End Using
-
-            'Fix form size
-            Me.Size = New Size((H_DISP) + (8 * SQR) + B_THICKNESS + 16, (2 * V_DISP) + (8 * SQR) + B_THICKNESS + 9)
-
 
             'Draw pieces
             Dim piece_array() As String = {"", "♟", "♞", "♝", "♜", "♛", "♚"}
@@ -208,15 +171,17 @@ Public Class Form1
                     If WhiteBottom = False Then
                         i_v = 7 - v
                         i_h = 7 - h
+                    Else
+                        i_h = 7 - h
                     End If
                     If i < 0 Then
                         Using gp As New GraphicsPath()
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((i_h * SQR) + B_THICKNESS + 10, (i_v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((i_h * SQR) + B_THICKNESS + 9, (i_v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
                             .FillPath(Brushes.Black, gp)
                         End Using
                     Else
                         Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((i_h * SQR) + B_THICKNESS + 10, (i_v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((i_h * SQR) + B_THICKNESS + 9, (i_v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
                             .DrawPath(p, gp)
                             .FillPath(Brushes.White, gp)
                         End Using
