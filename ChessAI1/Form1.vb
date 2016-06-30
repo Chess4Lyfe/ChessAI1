@@ -77,6 +77,7 @@ Public Class Form1
         For i = 0 To 7
             For j = 0 To 7
                 ' Find all moves for every square
+                Debug.Print("Checking move {0}{1}", xmaps(j), ymaps(i))
                 tmp = MoveGen.GetMoves(New iVector2(j, i))
                 tmp.Print()
             Next
