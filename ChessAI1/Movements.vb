@@ -19,4 +19,8 @@
         Next
 
     End Sub
+
+    Public Function Contains(vec As iVector2) As Boolean
+        Return movements.Contains(New Tuple(Of iVector2, Integer)(vec, vec.deref()))
+    End Function
 End Class

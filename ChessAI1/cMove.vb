@@ -1,15 +1,31 @@
 ﻿Public Class cMove
 
 
-    Private CanCastle As New Dictionary(Of String, Boolean)
+    Private HasNotMoved As New Dictionary(Of String, Boolean)
 
     Sub New()
         ' Set up all the castle flags
-        CanCastle.Add("WQ", True)
-        CanCastle.Add("WK", True)
-        CanCastle.Add("BQ", True)
-        CanCastle.Add("BK", True)
+        HasNotMoved.Add("WQ", True)
+        HasNotMoved.Add("WK", True)
+        HasNotMoved.Add("BQ", True)
+        HasNotMoved.Add("BK", True)
     End Sub
+
+    Private AllPossibleMovements(7, 7) As Movements
+
+    Public Sub UpdateMoves()
+        For i = 0 To 7
+            For j = 0 To 7
+                ' Find all moves for every square
+                AllPossibleMovements(i, j) = GetMoves(New iVector2(i, j))
+            Next
+        Next
+
+    End Sub
+
+    Public Function VerifyMove(pos As iVector2, target As iVector2, White As Boolean)
+
+    End Function
 
     Public Function GetMoves(pos As iVector2) As Movements
         Dim retval As New Movements
@@ -146,13 +162,13 @@
 
             Case 4
                 ' rook castling
-                If pos.isAt(7, 7) AndAlso CanCastle("WK") Then
+                If pos.isAt(7, 7) AndAlso HasNotMoved("WK") Then
                     retval.Add(7, 7)
-                ElseIf pos.isAt(0, 7) AndAlso CanCastle("WQ") Then
+                ElseIf pos.isAt(0, 7) AndAlso HasNotMoved("WQ") Then
                     retval.Add(0, 7)
-                ElseIf pos.isAt(0, 0) AndAlso CanCastle("BQ") Then
+                ElseIf pos.isAt(0, 0) AndAlso HasNotMoved("BQ") Then
                     retval.Add(0, 0)
-                ElseIf pos.isAt(7, 0) AndAlso CanCastle("BK") Then
+                ElseIf pos.isAt(7, 0) AndAlso HasNotMoved("BK") Then
                     retval.Add(7, 0)
                 End If
 
@@ -230,17 +246,27 @@
                 Next
 
                 ' King Castling
-                If pos.isAt(4, 7) AndAlso CanCastle("WK") Then
-                    'retval.Add(, 7)
-                ElseIf pos.isAt(4, 7) AndAlso CanCastle("WQ") Then
-                    retval.Add(0, 7)
-                ElseIf pos.isAt(0, 0) AndAlso CanCastle("BQ") Then
-                    retval.Add(0, 0)
-                ElseIf pos.isAt(7, 0) AndAlso CanCastle("BK") Then
-                    retval.Add(7, 0)
+                If type > 0 Then
+                    ' White castling
+                    If HasNotMoved("WK") AndAlso Form1.board(5, 7) = 0 AndAlso Form1.board(6, 7) = 0 Then
+                        'White king-side caslting valid
+                        retval.Add(6, 7)
+                    End If
+                    If HasNotMoved("WQ") AndAlso Form1.board(1, 7) = 0 AndAlso Form1.board(2, 7) = 0 AndAlso Form1.board(3, 7) = 0 Then
+                        'White queen-side caslting valid
+                        retval.Add(2, 7)
+                    End If
+                Else
+                    ' Black castling
+                    If HasNotMoved("BK") AndAlso Form1.board(1, 0) = 0 AndAlso Form1.board(2, 0) = 0 Then
+                        'Black king-side caslting valid
+                        retval.Add(1, 0)
+                    End If
+                    If HasNotMoved("BQ") AndAlso Form1.board(6, 0) = 0 AndAlso Form1.board(5, 0) = 0 AndAlso Form1.board(4, 0) = 0 Then
+                        'Black queen-side caslting valid
+                        retval.Add(5, 0)
+                    End If
                 End If
-
-
 
         End Select
         Return retval
