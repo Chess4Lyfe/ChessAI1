@@ -173,21 +173,21 @@ Public Class cMove
                     End If
                 Next
 
-            Case 4
-                ' rook castling
-                If pos.isAt(7, 7) AndAlso Form1.board(6, 7) = 0 AndAlso HasNotMoved("WK") Then
-                    ' White Kingside Castle
-                    retval.Add(5, 7)
-                ElseIf pos.isAt(0, 7) AndAlso Form1.board(1, 7) = 0 AndAlso Form1.board(2, 7) = 0 AndAlso HasNotMoved("WQ") Then
-                    ' White Queenside Castle
-                    retval.Add(3, 7)
-                ElseIf pos.isAt(0, 0) AndAlso Form1.board(6, 0) = 0 AndAlso HasNotMoved("BK") Then
-                    'Black Queenside Castle
-                    retval.Add(5, 0)
-                ElseIf pos.isAt(7, 0) AndAlso Form1.board(1, 0) = 0 AndAlso Form1.board(2, 0) = 0 AndAlso HasNotMoved("BQ") Then
-                    ' Black Queenside Castle
-                    retval.Add(3, 0)
-                End If
+            'Case 4
+            '    ' rook castling
+            '    If pos.isAt(7, 7) AndAlso Form1.board(6, 7) = 0 AndAlso HasNotMoved("WK") Then
+            '        ' White Kingside Castle
+            '        retval.Add(5, 7)
+            '    ElseIf pos.isAt(0, 7) AndAlso Form1.board(1, 7) = 0 AndAlso Form1.board(2, 7) = 0 AndAlso HasNotMoved("WQ") Then
+            '        ' White Queenside Castle
+            '        retval.Add(3, 7)
+            '    ElseIf pos.isAt(0, 0) AndAlso Form1.board(6, 0) = 0 AndAlso HasNotMoved("BK") Then
+            '        'Black Queenside Castle
+            '        retval.Add(5, 0)
+            '    ElseIf pos.isAt(7, 0) AndAlso Form1.board(1, 0) = 0 AndAlso Form1.board(2, 0) = 0 AndAlso HasNotMoved("BQ") Then
+            '        ' Black Queenside Castle
+            '        retval.Add(3, 0)
+            '    End If
 
             Case 4, 5
                 'rook or queen
