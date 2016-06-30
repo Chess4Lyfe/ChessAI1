@@ -19,7 +19,7 @@ Public Class cMove
         For i = 0 To 7
             For j = 0 To 7
                 ' Find all moves for every square
-                AllPossibleMovements(i, j) = GetMoves(New iVector2(i, j))
+                AllPossibleMovements(i, j) = CalculateMoves(New iVector2(i, j))
             Next
         Next
 
@@ -30,6 +30,14 @@ Public Class cMove
     End Function
 
     Public Function GetMoves(pos As iVector2) As Movements
+        Return AllPossibleMovements(pos.x, pos.y)
+    End Function
+
+    Public Function GetMoves(x As Integer, y As Integer) As Movements
+        Return AllPossibleMovements(x, y)
+    End Function
+
+    Private Function CalculateMoves(pos As iVector2) As Movements
         Dim retval As New Movements
         Dim type As Integer = pos.deref()
         Debug.Print("Checking move {0}{1}", Form1.xmaps(pos.x), Form1.ymaps(pos.y))
