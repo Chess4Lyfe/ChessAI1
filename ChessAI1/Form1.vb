@@ -44,35 +44,35 @@ Public Class Form1
             Next
         Next
 
-        '' Pawns
-        'For i = 0 To 7
-        '    board(i, 1) = -1
-        '    board(i, 6) = 1
-        'Next
+        ' Pawns
+        For i = 0 To 7
+            board(i, 1) = -1
+            board(i, 6) = 1
+        Next
 
-        '' Knights
-        'board(1, 0) = -2
-        'board(6, 0) = -2
-        'board(1, 7) = 2
-        'board(6, 7) = 2
+        ' Knights
+        board(1, 0) = -2
+        board(6, 0) = -2
+        board(1, 7) = 2
+        board(6, 7) = 2
 
-        '' Bishops
-        'board(2, 0) = -3
-        'board(5, 0) = -3
-        'board(2, 7) = 3
-        'board(5, 7) = 3
+        ' Bishops
+        board(2, 0) = -3
+        board(5, 0) = -3
+        board(2, 7) = 3
+        board(5, 7) = 3
 
-        '' Rooks
+        ' Rooks
         board(0, 0) = -4
-        'board(7, 0) = -4
-        'board(0, 7) = 4
-        'board(7, 7) = 4
+        board(7, 0) = -4
+        board(0, 7) = 4
+        board(7, 7) = 4
 
-        '' Kings and Queens
-        'board(4, 0) = -6
-        'board(3, 0) = -5
-        'board(4, 7) = 6
-        'board(3, 7) = 5
+        ' Kings and Queens
+        board(4, 0) = -6
+        board(3, 0) = -5
+        board(4, 7) = 6
+        board(3, 7) = 5
 
         '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         '''''''''''''''''''' DEBUG CODE '''''''''''''''''''''''''''''''''''
