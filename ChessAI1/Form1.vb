@@ -25,7 +25,7 @@ Public Class Form1
     ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
-    Public WhiteBottom As Boolean = False
+    Public WhiteBottom As Boolean = True
     Const OFF_BOARD As Integer = 1000
 
 
@@ -35,8 +35,17 @@ Public Class Form1
 
         ' Initialise everthing
         DoubleBuffered = True
-        Dim i, j As Integer
+        Dim i, j, a, b, c As Integer
 
+        If WhiteBottom Then
+            a = -1
+            b = 5
+            c = 6
+        Else
+            a = 1
+            b = 6
+            c = 5
+        End If
 
         For i = 0 To 7
             For j = 0 To 7
@@ -46,36 +55,36 @@ Public Class Form1
 
         ' Pawns
         For i = 0 To 7
-            board(i, 1) = -1
-            board(i, 6) = 1
+            board(i, 1) = -1 * a
+            board(i, 6) = 1 * a
         Next
 
         ' Knights
-        board(1, 0) = -2
-        board(6, 0) = -2
-        board(1, 7) = 2
-        board(6, 7) = 2
+        board(1, 0) = -2 * a
+        board(6, 0) = -2 * a
+        board(1, 7) = 2 * a
+        board(6, 7) = 2 * a
 
         ' Bishops
-        board(2, 0) = -3
-        board(5, 0) = -3
-        board(2, 7) = 3
-        board(5, 7) = 3
+        board(2, 0) = -3 * a
+        board(5, 0) = -3 * a
+        board(2, 7) = 3 * a
+        board(5, 7) = 3 * a
 
         ' Rooks
-        board(0, 0) = -4
-        board(7, 0) = -4
-        board(0, 7) = 4
-        board(7, 7) = 4
+        board(0, 0) = -4 * a
+        board(7, 0) = -4 * a
+        board(0, 7) = 4 * a
+        board(7, 7) = 4 * a
 
         ' Kings and Queens
-        board(4, 0) = -6
-        board(3, 0) = -5
-        board(4, 7) = 6
-        board(3, 7) = 5
+        board(4, 0) = -b * a
+        board(3, 0) = -c * a
+        board(4, 7) = b * a
+        board(3, 7) = c * a
 
-        '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-        '''''''''''''''''''' DEBUG CODE '''''''''''''''''''''''''''''''''''
+        '''''''''''''''''''''''''''''''''''''''''''''''''''
+        '''''''''''''''''''' DEBUG CODE ''''''''''''''''''' 
 
         Debug.Print("======== DEBUG ========")
 
@@ -94,8 +103,8 @@ Public Class Form1
             Next
         Next
 
-        '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-        ''''''''''''''''''' END DEBUG CODE ''''''''''''''''''''''''''''''''
+        '''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        '''''''''''''''''''' END DEBUG CODE ''''''''''''''''''' 
 
 
     End Sub
@@ -163,10 +172,6 @@ Public Class Form1
                     Dim i As Integer = Me.board(h, v)
                     .SmoothingMode = SmoothingMode.AntiAlias
                     piece_char = piece_array(Math.Abs(i))
-                    If WhiteBottom = False Then
-                        i_v = 7 - v
-                        i_h = 7 - h
-                    End If
                     If i < 0 Then
                         Using gp As New GraphicsPath()
                             gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((i_h * SQR) + B_THICKNESS + 9, (i_v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
