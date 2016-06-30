@@ -98,7 +98,9 @@ Public Class Form1
                 For v = 1 To 8
                     For b = 0 To 3
                         Dim r As New Rectangle((2 * (SQR * b)) + (SQR * ((v + 1) Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR)
+                        'check if mouse is hovering over rendered square
                         If r.Contains(PointToClient(MousePosition)) Then
+                            ' if player white, piece is white and mouse is hovering, change square color
                             If WhiteBottom = True Then
                                 If board(b * 2, v - 1) > 0 Then
                                     .FillRectangle(Brushes.Aqua, r)
