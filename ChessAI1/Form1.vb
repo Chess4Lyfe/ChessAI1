@@ -24,7 +24,7 @@ Public Class Form1
     ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
-    Public WhiteBottom As Boolean = True
+    Public WhiteBottom As Boolean = False
     Const OFF_BOARD As Integer = 1000
 
 
@@ -68,10 +68,10 @@ Public Class Form1
         board(7, 7) = 4
 
         ' Kings and Queens
-        board(3, 0) = -6
-        board(4, 0) = -5
-        board(3, 7) = 6
-        board(4, 7) = 5
+        board(4, 0) = -6
+        board(3, 0) = -5
+        board(4, 7) = 6
+        board(3, 7) = 5
 
         '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         '''''''''''''''''''' DEBUG CODE '''''''''''''''''''''''''''''''''''
@@ -162,8 +162,6 @@ Public Class Form1
                     piece_char = piece_array(Math.Abs(i))
                     If WhiteBottom = False Then
                         i_v = 7 - v
-                        i_h = 7 - h
-                    Else
                         i_h = 7 - h
                     End If
                     If i < 0 Then
