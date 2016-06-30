@@ -98,7 +98,7 @@ Public Class cMove
 
 
             Case 2
-                'knight
+                'horsey
                 Dim positions(,) As Integer = New Integer(7, 1) {{1, 2}, {2, 1}, {-1, 2}, {2, -1}, {-1, -2}, {-2, -1}, {1, -2}, {-2, 1}}
                 For i As Integer = 0 To 7
                     Dim v = New iVector2(positions(i, 0), positions(i, 1))
