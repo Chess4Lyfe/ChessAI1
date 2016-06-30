@@ -36,7 +36,7 @@ Public Class Movements
 
         Private pieceValue As Integer() = {0, 1, 3, 3, 5, 9, 9001}
         ' hash function for sorting by value of move
-        ' this will get huuuuuuuuuge later
+        ' "this will get huuuuuuuuuge later" - Donald Trump
         Private Function value(pos As iVector2) As Integer
             If castle = 0 Then
                 ' Not a castle move
