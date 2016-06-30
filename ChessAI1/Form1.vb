@@ -6,6 +6,15 @@ Public Class Form1
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
     Private MoveGen As New cMove
 
+
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    '''''''''''''''''DEBUG CODE''''''''''''''''''''''''''''
+    Public xmaps As String() = {"a", "b", "c", "d", "e", "f", "g", "h"}
+    Public ymaps As String() = {"1", "2", "3", "4", "5", "6", "7", "8"}
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+
     ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
     ' 14= rook that hasn't moved, 16 = king that hasn't moved
 

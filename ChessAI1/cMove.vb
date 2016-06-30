@@ -1,4 +1,6 @@
-﻿Public Class cMove
+﻿' Bow before your God object
+
+Public Class cMove
 
 
     Private HasNotMoved As New Dictionary(Of String, Boolean)
@@ -23,14 +25,14 @@
 
     End Sub
 
-    Public Function VerifyMove(pos As iVector2, target As iVector2, White As Boolean)
-
+    Public Function VerifyMove(pos As iVector2, target As iVector2, White As Boolean) As Boolean
+        Return AllPossibleMovements(pos.x, pos.y).Contains(target)
     End Function
 
     Public Function GetMoves(pos As iVector2) As Movements
         Dim retval As New Movements
         Dim type As Integer = pos.deref()
-        Debug.Print("Checking move (" + pos.x.ToString() + ", " + pos.y.ToString() + ")")
+        Debug.Print("Checking move {0}{1}", Form1.xmaps(pos.x), Form1.ymaps(pos.y))
 
         Select Case Math.Abs(type)
             Case 1
@@ -162,14 +164,18 @@
 
             Case 4
                 ' rook castling
-                If pos.isAt(7, 7) AndAlso HasNotMoved("WK") Then
-                    retval.Add(7, 7)
-                ElseIf pos.isAt(0, 7) AndAlso HasNotMoved("WQ") Then
-                    retval.Add(0, 7)
-                ElseIf pos.isAt(0, 0) AndAlso HasNotMoved("BQ") Then
-                    retval.Add(0, 0)
-                ElseIf pos.isAt(7, 0) AndAlso HasNotMoved("BK") Then
-                    retval.Add(7, 0)
+                If pos.isAt(7, 7) AndAlso Form1.board(6, 7) = 0 AndAlso HasNotMoved("WK") Then
+                    ' White Kingside Castle
+                    retval.Add(5, 7)
+                ElseIf pos.isAt(0, 7) AndAlso Form1.board(1, 7) = 0 AndAlso Form1.board(2, 7) = 0 AndAlso HasNotMoved("WQ") Then
+                    ' White Queenside Castle
+                    retval.Add(3, 7)
+                ElseIf pos.isAt(0, 0) AndAlso Form1.board(6, 0) = 0 AndAlso HasNotMoved("BK") Then
+                    'Black Queenside Castle
+                    retval.Add(5, 0)
+                ElseIf pos.isAt(7, 0) AndAlso Form1.board(1, 0) = 0 AndAlso Form1.board(2, 0) = 0 AndAlso HasNotMoved("BQ") Then
+                    ' Black Queenside Castle
+                    retval.Add(3, 0)
                 End If
 
             Case 4, 5
