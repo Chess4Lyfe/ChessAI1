@@ -111,26 +111,8 @@ Public Class Form1
                         Dim r As New Rectangle((2 * (SQR * b)) + (SQR * ((v + 1) Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR)
                         'check if mouse is hovering over rendered square
                         If r.Contains(PointToClient(MousePosition)) Then
-                            ' if player white, piece is white and mouse is hovering, change square color
-                            If WhiteBottom = True Then
-                                If board(b * 2, v - 1) > 0 Then
-                                    .FillRectangle(Brushes.Aqua, r)
-                                Else
-                                    .FillRectangle(b_white, r)
-                                End If
-                            Else
-                                If board(b * 2, v - 1) < 0 Then
-                                    .FillRectangle(Brushes.Aqua, r)
-                                Else
-                                    .FillRectangle(b_white, r)
-                                End If
-                            End If
-                        Else
-                            .FillRectangle(b_white, r)
                         End If
-                        If board(b * 2, v - 1) = 0 Then
-                            .FillRectangle(b_white, r)
-                        End If
+                        .FillRectangle(b_white, r)
                     Next
                 Next
             End Using
@@ -141,25 +123,8 @@ Public Class Form1
                     For b = 0 To 3
                         Dim r As New Rectangle((2 * (SQR * b)) + (SQR * (v Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR)
                         If r.Contains(PointToClient(MousePosition)) Then
-                            If WhiteBottom = True Then
-                                If board(b * 2, v - 1) > 0 Then
-                                    .FillRectangle(Brushes.Aqua, r)
-                                Else
-                                    .FillRectangle(b_black, r)
-                                End If
-                            Else
-                                If board(b * 2, v - 1) < 0 Then
-                                    .FillRectangle(Brushes.Aqua, r)
-                                Else
-                                    .FillRectangle(b_black, r)
-                                End If
-                            End If
-                        Else
-                            .FillRectangle(b_black, r)
                         End If
-                        If board(b * 2, v - 1) = 0 Then
-                            .FillRectangle(b_black, r)
-                        End If
+                        .FillRectangle(b_black, r)
                     Next
                 Next
             End Using
