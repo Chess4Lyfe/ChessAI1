@@ -4,7 +4,9 @@ Public Class Form1
 
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
+
     Private MoveGen As New cMove
+    Public cf As New CoordUnfucker
 
     'Constant declerations
     Const SQR As Integer = 60
@@ -14,6 +16,7 @@ Public Class Form1
 
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '''''''''''''''''DEBUG CODE''''''''''''''''''''''''''''
+
     Public xmaps As String() = {"a", "b", "c", "d", "e", "f", "g", "h"}
     Public ymaps As String() = {"1", "2", "3", "4", "5", "6", "7", "8"}
 
@@ -22,10 +25,8 @@ Public Class Form1
 
 
     ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
-    ' 14= rook that hasn't moved, 16 = king that hasn't moved
 
     Public board(7, 7) As Integer
-    Public WhiteBottom As Boolean = True
     Const OFF_BOARD As Integer = 1000
 
 
@@ -79,7 +80,7 @@ Public Class Form1
         '''''''''''''''''''' DEBUG CODE ''''''''''''''''''' 
 
         Debug.Print("======== DEBUG ========")
-
+        cf.WhiteBottom = False ' assume black at the bottom
 
 
         Dim tmp As Movements
@@ -89,8 +90,10 @@ Public Class Form1
         For i = 0 To 7
             For j = 0 To 7
                 ' Find all moves for every square
-                Debug.Print("Checking move {0}{1}", xmaps(7 - j), ymaps(7 - i))
-                tmp = MoveGen.GetMoves(New iVector2(j, i))
+                Dim checker = New iVector2(j, i)
+                checker = cf.Swap(checker)
+                Debug.Print("Checking move {0}{1}", xmaps(checker.x), ymaps(checker.y))
+                tmp = MoveGen.GetMoves(checker)
                 tmp.Print()
             Next
         Next
@@ -153,25 +156,26 @@ Public Class Form1
             Dim piece_array() As String = {"", "♟", "♞", "♝", "♜", "♛", "♚"}
             Dim piece_char As String
 
+            Dim pos As iVector2
+
             For v = 0 To 7
                 For h = 0 To 7
 
-                    Dim i_v As Integer = v
-                    Dim i_h As Integer = h
+                    pos = New iVector2(h, v)
 
-                    ' Debug.Print(v)
+                    Dim i As Integer = pos.deref()
 
-                    Dim i As Integer = Me.board(h, v)
+                    pos = cf.Swap(h, v)
                     .SmoothingMode = SmoothingMode.AntiAlias
                     piece_char = piece_array(Math.Abs(i))
                     If i < 0 Then
                         Using gp As New GraphicsPath()
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((i_h * SQR) + B_THICKNESS + 9, (i_v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
                             .FillPath(Brushes.Black, gp)
                         End Using
                     Else
                         Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((i_h * SQR) + B_THICKNESS + 9, (i_v * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
                             .DrawPath(p, gp)
                             .FillPath(Brushes.White, gp)
                         End Using
