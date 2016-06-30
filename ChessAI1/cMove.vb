@@ -1,4 +1,6 @@
-﻿Public Class cMove
+﻿' Bow before your God object
+
+Public Class cMove
 
 
     Private HasNotMoved As New Dictionary(Of String, Boolean)
@@ -23,14 +25,14 @@
 
     End Sub
 
-    Public Function VerifyMove(pos As iVector2, target As iVector2, White As Boolean)
-
+    Public Function VerifyMove(pos As iVector2, target As iVector2, White As Boolean) As Boolean
+        Return AllPossibleMovements(pos.x, pos.y).Contains(target)
     End Function
 
     Public Function GetMoves(pos As iVector2) As Movements
         Dim retval As New Movements
         Dim type As Integer = pos.deref()
-        Debug.Print("Checking move (" + pos.x.ToString() + ", " + pos.y.ToString() + ")")
+        Debug.Print("Checking move {0}{1}", Form1.xmaps(pos.x), Form1.ymaps(pos.y))
 
         Select Case Math.Abs(type)
             Case 1
