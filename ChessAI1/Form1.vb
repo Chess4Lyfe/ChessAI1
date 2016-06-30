@@ -16,6 +16,7 @@ Public Class Form1
     '''''''''''''''''DEBUG CODE''''''''''''''''''''''''''''
     Public xmaps As String() = {"a", "b", "c", "d", "e", "f", "g", "h"}
     Public ymaps As String() = {"1", "2", "3", "4", "5", "6", "7", "8"}
+
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
@@ -77,6 +78,8 @@ Public Class Form1
         '''''''''''''''''''' DEBUG CODE '''''''''''''''''''''''''''''''''''
 
         Debug.Print("======== DEBUG ========")
+
+        xmaps.Reverse()
 
         Dim tmp As Movements
 
