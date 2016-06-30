@@ -91,7 +91,7 @@ Public Class cMove
 
 
             Case 2
-                'knight
+                'horsey
                 Dim positions(,) As Integer = New Integer(7, 1) {{1, 2}, {2, 1}, {-1, 2}, {2, -1}, {-1, -2}, {-2, -1}, {1, -2}, {-2, 1}}
                 For i As Integer = 0 To 7
                     retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
