@@ -2,6 +2,8 @@
 
 ' Jesus Object, son of cMove, the God object
 Public Class Movements
+    Implements IEnumerable
+    Implements ICollection
 
 
     ' this subclass descrives a move completely
@@ -19,6 +21,11 @@ Public Class Movements
             castle = castles
             virtue = Me.value(place)
         End Sub
+
+
+        Public Overrides Function ToString() As String
+            Return target.ToString()
+        End Function
 
         ' Weird comparison function thing for storing in BST
         Public Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
@@ -54,7 +61,47 @@ Public Class Movements
 
     End Class
 
-    Class CompareMoves : Implements IComparer
+
+    Public Overrides Function toString() As String
+        Dim str As String = ""
+        For Each m In movements
+            str = str + m.ToString()
+        Next
+        Return str
+    End Function
+
+
+    Private movements As SortedSet(Of MoveData)
+
+    Public ReadOnly Property Count As Integer Implements ICollection.Count
+        Get
+            Return movements.Count
+        End Get
+    End Property
+
+    Private ReadOnly Property SyncRoot As Object Implements ICollection.SyncRoot
+        Get
+            Throw New NotImplementedException()
+        End Get
+    End Property
+
+    Private ReadOnly Property IsSynchronized As Boolean Implements ICollection.IsSynchronized
+        Get
+            Throw New NotImplementedException()
+        End Get
+    End Property
+
+    Private Function IEnumerable_GetEnumerator() As IEnumerator Implements IEnumerable.GetEnumerator
+        Return movements.GetEnumerator()
+    End Function
+
+    Sub New()
+        movements = New SortedSet(Of MoveData)
+    End Sub
+
+
+
+    Public Class CompareMoves : Implements IComparer
 
         ' Alternate comparison object
         Public Function Compare(ByVal A As Object, ByVal B As Object) As Integer Implements IComparer.Compare
@@ -63,9 +110,6 @@ Public Class Movements
             Return M.virtue - N.virtue ' this may need to be swapped
         End Function
     End Class
-
-
-    Private movements As SortedSet(Of MoveData)
 
     Public Sub Add(x As Integer, y As Integer)
         Dim vec = New iVector2(x, y)
@@ -91,9 +135,6 @@ Public Class Movements
 
     End Sub
 
-    Sub New()
-        movements = New SortedSet(Of MoveData)
-    End Sub
 
 
 
@@ -115,4 +156,8 @@ Public Class Movements
         Array.Sort(Of MoveData)(GoodMoves, New CompareMoves)
         Return GoodMoves
     End Function
+
+    Public Sub CopyTo(array As Array, index As Integer) Implements ICollection.CopyTo
+        movements.CopyTo(array, index)
+    End Sub
 End Class

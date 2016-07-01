@@ -6,7 +6,7 @@ Public Class Form1
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
 
     Private MoveGen As New cMove
-    Public cf As New CoordUnfucker
+    Public WhiteBottom As Boolean
 
     'Constant declerations
     Const SQR As Integer = 60
@@ -80,23 +80,23 @@ Public Class Form1
         '''''''''''''''''''' DEBUG CODE ''''''''''''''''''' 
 
         Debug.Print("======== DEBUG ========")
-        cf.WhiteBottom = False ' assume black at the bottom
+        WhiteBottom = True ' assume black at the bottom
 
 
         Dim tmp As Movements
 
         MoveGen.UpdateMoves()
 
-        For i = 0 To 7
-            For j = 0 To 7
-                ' Find all moves for every square
-                Dim checker = New iVector2(j, i)
-                checker = cf.Swap(checker)
-                Debug.Print("Checking move {0}{1}", xmaps(checker.x), ymaps(checker.y))
-                tmp = MoveGen.GetMoves(checker)
-                tmp.Print()
-            Next
-        Next
+        'For i = 0 To 7
+        '    For j = 0 To 7
+        '        ' Find all moves for every square
+        '        Dim checker = New iVector2(j, i)
+        '        checker.ChangeCoords()
+        '        Debug.Print("Checking move {0}{1}", xmaps(checker.x), ymaps(checker.y))
+        '        tmp = MoveGen.GetMoves(checker)
+        '        tmp.Print()
+        '    Next
+        'Next
 
         '''''''''''''''''''''''''''''''''''''''''''''''''''''''
         '''''''''''''''''''' END DEBUG CODE ''''''''''''''''''' 
@@ -106,6 +106,10 @@ Public Class Form1
 
 
 
+    Private Function toRect(vec As iVector2) As Rectangle
+        Return New Rectangle(SQR * vec.x + H_DISP, SQR * vec.y + V_DISP, SQR, SQR)
+    End Function
+
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
 
@@ -114,30 +118,78 @@ Public Class Form1
                 .FillRectangle(b_brown, New Rectangle(H_DISP - B_THICKNESS, V_DISP - B_THICKNESS, SQR * 8 + (2 * B_THICKNESS), SQR * 8 + (2 * B_THICKNESS)))
             End Using
 
-            'Draw white tiles
-            Using b_white As New SolidBrush(Color.FromArgb(189, 204, 222))
-                For v = 1 To 8
-                    For b = 0 To 3
-                        Dim r As New Rectangle((2 * (SQR * b)) + (SQR * ((v + 1) Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR)
-                        'check if mouse is hovering over rendered square
-                        If r.Contains(PointToClient(MousePosition)) Then
-                        End If
-                        .FillRectangle(b_white, r)
-                    Next
-                Next
-            End Using
+            Dim b_here As New iVector2
+            'b_here is here in board coords
 
-            'Draw black tiles
-            Using b_black As New SolidBrush(Color.FromArgb(82, 128, 139))
-                For v = 1 To 8
-                    For b = 0 To 3
-                        Dim r As New Rectangle((2 * (SQR * b)) + (SQR * (v Mod 2)) + H_DISP, SQR * (v - 1) + V_DISP, SQR, SQR)
-                        If r.Contains(PointToClient(MousePosition)) Then
+
+            ' I'm not using Using, sue me 
+            Dim b_white As New SolidBrush(Color.FromArgb(189, 204, 222))
+            Dim b_black As New SolidBrush(Color.FromArgb(82, 128, 139))
+            Dim b_highlight As New SolidBrush(Color.FromArgb(64, 201, 222))
+
+            Dim r As Rectangle
+            Dim typ As Integer
+
+            'Draw tiles
+            For i_x = 0 To 7
+                For i_y = 0 To 7
+                    b_here.store(i_x, i_y)
+
+
+                    r = toRect(b_here)
+
+
+
+                    'check if mouse is hovering over rendered square
+                    If r.Contains(PointToClient(MousePosition)) Then
+                        Dim possibleMoves As New Movements
+                        Dim here = New iVector2(i_x, i_y)
+                        here.ChangeCoords()
+                        typ = here.deref()
+
+                        If WhiteBottom Then
+                            If typ > 0 Then
+                                'playing as white
+                                possibleMoves = MoveGen.GetMoves(here)
+
+                            End If
+                        Else
+                            If typ < 0 Then
+                                'playing as black
+                                possibleMoves = MoveGen.GetMoves(here)
+                            End If
+
+                            .FillRectangle(b_highlight, r)
                         End If
-                        .FillRectangle(b_black, r)
-                    Next
+
+                        Debug.Print(possibleMoves.toString())
+
+
+                        For Each move As Movements.MoveData In possibleMoves
+                            move.target.ChangeCoords()
+
+                            .FillRectangle(b_highlight, toRect(move.target))
+                        Next
+
+
+                    Else
+
+                        If (b_here.Index() + b_here.y) Mod 2 = 0 Then
+                            .FillRectangle(b_white, r)
+                        Else
+                            .FillRectangle(b_black, r)
+                        End If
+
+
+                    End If
+
                 Next
-            End Using
+            Next
+
+            ' Clean up
+            b_white.Dispose()
+            b_black.Dispose()
+            b_highlight.Dispose()
 
             'Draw column/row labels
             Using b_gold As New SolidBrush(Color.FromArgb(82, 129, 142))
@@ -165,7 +217,8 @@ Public Class Form1
 
                     Dim i As Integer = pos.deref()
 
-                    pos = cf.Swap(h, v)
+                    pos.ChangeCoords()
+
                     .SmoothingMode = SmoothingMode.AntiAlias
                     piece_char = piece_array(Math.Abs(i))
                     If i < 0 Then

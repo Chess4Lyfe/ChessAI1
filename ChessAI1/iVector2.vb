@@ -18,6 +18,10 @@ Public Class iVector2
         End If
     End Sub
 
+    Sub New(v As iVector2)
+        store(v.x, v.y)
+    End Sub
+
     Public Function deref() As Integer
         ' Returns the ID of the piece at the the specified place
         If 0 <= x AndAlso x <= 7 AndAlso 0 <= y AndAlso y <= 7 Then
@@ -58,7 +62,7 @@ Public Class iVector2
 
 
     Public Function Index() As Integer
-        Return 8 * x + y
+        Return x + 8 * y
     End Function
 
 
@@ -67,8 +71,17 @@ Public Class iVector2
         Return vx = x AndAlso vy = y
     End Function
 
-    Public Sub print()
-        Debug.Print("({0}, {1})", x, y)
+    Public Overrides Function ToString() As String
+        Return String.Format("({0}, {1})", x, y)
+    End Function
+
+
+    Public Sub ChangeCoords()
+        If Not Form1.WhiteBottom Then
+            x = 7 - x
+            y = 7 - y
+        End If
     End Sub
+
 
 End Class
