@@ -22,12 +22,11 @@ Public Class Form1
 
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-
-
     ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
 
     Public board(7, 7) As Integer
     Const OFF_BOARD As Integer = 1000
+    Private SelectedPiece As New iVector2(6, 7)
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -104,15 +103,12 @@ Public Class Form1
 
     End Sub
 
-
-
     Private Function toRect(vec As iVector2) As Rectangle
         Return New Rectangle(SQR * vec.x + H_DISP, SQR * vec.y + V_DISP, SQR, SQR)
     End Function
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
-
             'Draw border
             Using b_brown As New SolidBrush(Color.FromArgb(21, 38, 41))
                 .FillRectangle(b_brown, New Rectangle(H_DISP - B_THICKNESS, V_DISP - B_THICKNESS, SQR * 8 + (2 * B_THICKNESS), SQR * 8 + (2 * B_THICKNESS)))
@@ -128,61 +124,39 @@ Public Class Form1
             Dim b_highlight As New SolidBrush(Color.FromArgb(64, 201, 222))
 
             Dim r As Rectangle
-            Dim typ As Integer
 
             'Draw tiles
             For i_x = 0 To 7
                 For i_y = 0 To 7
+
                     b_here.store(i_x, i_y)
-
-
                     r = toRect(b_here)
 
+                    If (b_here.Index() + b_here.y) Mod 2 = 0 Then
+                        .FillRectangle(b_white, r)
+                    Else
+                        .FillRectangle(b_black, r)
+                    End If
 
+                    Dim possibleMoves As New Movements
+                    Dim here = New iVector2(i_x, i_y)
+
+                    If WhiteBottom = True Then
+                        here.ChangeCoords()
+                    End If
+
+                    possibleMoves = MoveGen.GetMoves(SelectedPiece)
+
+                    For Each move As Movements.MoveData In possibleMoves
+                        move.target.ChangeCoords()
+                        'Debug.Print(move.target.ToString())
+                        .FillRectangle(b_highlight, toRect(move.target))
+                    Next
 
                     'check if mouse is hovering over rendered square
                     If r.Contains(PointToClient(MousePosition)) Then
-                        Dim possibleMoves As New Movements
-                        Dim here = New iVector2(i_x, i_y)
-                        here.ChangeCoords()
-                        typ = here.deref()
-
-                        If WhiteBottom Then
-                            If typ > 0 Then
-                                'playing as white
-                                possibleMoves = MoveGen.GetMoves(here)
-
-                            End If
-                        Else
-                            If typ < 0 Then
-                                'playing as black
-                                possibleMoves = MoveGen.GetMoves(here)
-                            End If
-
-                            .FillRectangle(b_highlight, r)
-                        End If
-
-                        Debug.Print(possibleMoves.toString())
-
-
-                        For Each move As Movements.MoveData In possibleMoves
-                            move.target.ChangeCoords()
-
-                            .FillRectangle(b_highlight, toRect(move.target))
-                        Next
-
-
-                    Else
-
-                        If (b_here.Index() + b_here.y) Mod 2 = 0 Then
-                            .FillRectangle(b_white, r)
-                        Else
-                            .FillRectangle(b_black, r)
-                        End If
-
 
                     End If
-
                 Next
             Next
 
@@ -240,6 +214,25 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
+        Refresh()
+    End Sub
+
+    Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
+        Dim h As New iVector2
+        Dim r As Rectangle
+
+        For i_x = 0 To 7
+            For i_y = 0 To 7
+                h.store(i_x, i_y)
+                r = toRect(h)
+
+                If r.Contains(PointToClient(MousePosition)) Then
+                    SelectedPiece = h
+                    Debug.Print(SelectedPiece.ToString)
+                End If
+
+            Next
+        Next
         Refresh()
     End Sub
 End Class

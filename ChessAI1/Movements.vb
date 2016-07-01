@@ -1,12 +1,12 @@
 ﻿' Look at my sparkling comment-free code
 
-' Jesus Object, son of cMove, the God object
+' Jesus Object, son of cMove, the God of all objects
 Public Class Movements
     Implements IEnumerable
     Implements ICollection
 
 
-    ' this subclass descrives a move completely
+    ' this subclass describes a move completely
     Public Class MoveData
         Implements IComparable
 

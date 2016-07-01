@@ -59,13 +59,9 @@ Public Class iVector2
         Return New iVector2(a * x, a * y)
     End Function
 
-
-
     Public Function Index() As Integer
         Return x + 8 * y
     End Function
-
-
 
     Public Function isAt(vx As Integer, vy As Integer)
         Return vx = x AndAlso vy = y
@@ -74,7 +70,6 @@ Public Class iVector2
     Public Overrides Function ToString() As String
         Return String.Format("({0}, {1})", x, y)
     End Function
-
 
     Public Sub ChangeCoords()
         If Not Form1.WhiteBottom Then
