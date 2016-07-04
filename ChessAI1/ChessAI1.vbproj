@@ -72,8 +72,8 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chessboard.vb" />
     <Compile Include="cMove.vb" />
-    <Compile Include="CoordUnfucker.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>

@@ -2,7 +2,7 @@
 
 
 Public Class iVector2
-    Public Const OFF_BOARD = 1000
+
 
     Public x As Integer
     Public y As Integer
@@ -12,25 +12,13 @@ Public Class iVector2
         y = newY
     End Sub
 
-    Sub New(Optional newX As Integer = OFF_BOARD, Optional newY As Integer = OFF_BOARD)
-        If newX <> OFF_BOARD AndAlso newY <> OFF_BOARD Then
-            store(newX, newY)
-        End If
+    Sub New(Optional newX As Integer = 0, Optional newY As Integer = 0)
+        store(newX, newY)
     End Sub
 
     Sub New(v As iVector2)
         store(v.x, v.y)
     End Sub
-
-    Public Function deref() As Integer
-        ' Returns the ID of the piece at the the specified place
-        If 0 <= x AndAlso x <= 7 AndAlso 0 <= y AndAlso y <= 7 Then
-            Return Form1.board(x, y)
-        Else
-            Return OFF_BOARD ' Out of range
-        End If
-
-    End Function
 
     Public Sub Addition(vx As Integer, vy As Integer)
         x = x + vx
@@ -70,13 +58,6 @@ Public Class iVector2
     Public Overrides Function ToString() As String
         Return String.Format("({0}, {1})", x, y)
     End Function
-
-    Public Sub ChangeCoords()
-        If Not Form1.WhiteBottom Then
-            x = 7 - x
-            y = 7 - y
-        End If
-    End Sub
 
 
 End Class

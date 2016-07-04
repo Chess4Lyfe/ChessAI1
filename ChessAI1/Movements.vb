@@ -5,6 +5,7 @@ Public Class Movements
     Implements IEnumerable
     Implements ICollection
 
+    Private Shared b As Chessboard
 
     ' this subclass describes a move completely
     Public Class MoveData
@@ -13,8 +14,6 @@ Public Class Movements
         Public target As iVector2
         Public Property virtue As Integer
         Public castle As Byte
-
-
 
         Sub New(place As iVector2, value As Integer, Optional castles As Byte = 0)
             target = place
@@ -40,26 +39,25 @@ Public Class Movements
             End If
         End Function
 
-
         Private pieceValue As Integer() = {0, 1, 3, 3, 5, 9, 9001}
         ' hash function for sorting by value of move
         ' "this will get huuuuuuuuuge later" - Donald Trump
         Private Function value(pos As iVector2) As Integer
-            If castle = 0 Then
+            'TODO: castling properly
+            If True Then
                 ' Not a castle move
-                Dim tmp = pos.deref()
-                If tmp = iVector2.OFF_BOARD Then
-                    Return -9001
-                Else
-                    Return pieceValue(Math.Abs(pos.deref()))
-                End If
+                Dim tmp = b.at(pos)
+                Return pieceValue(Math.Abs(b.at(pos)))
 
             Else
                 Return 6 ' Arbitrary as fuck
             End If
         End Function
 
+
     End Class
+
+
 
 
     Public Overrides Function toString() As String
@@ -95,8 +93,9 @@ Public Class Movements
         Return movements.GetEnumerator()
     End Function
 
-    Sub New()
+    Sub New(theBoard As Chessboard)
         movements = New SortedSet(Of MoveData)
+        b = theBoard
     End Sub
 
 
@@ -113,35 +112,25 @@ Public Class Movements
 
     Public Sub Add(x As Integer, y As Integer)
         Dim vec = New iVector2(x, y)
-        Dim tmp = vec.deref()
-        If tmp <> iVector2.OFF_BOARD Then
+        Dim tmp = b.at(vec)
+        If b.OFF_BOARD <> tmp Then
             movements.Add(New MoveData(vec, tmp))
         End If
     End Sub
 
     Public Sub Add(vec As iVector2)
-        Dim tmp = vec.deref()
-        If tmp <> iVector2.OFF_BOARD Then
-            movements.Add(New MoveData(vec, tmp))
-        End If
-    End Sub
-
-    Public Sub Castle(x As Integer, y As Integer)
-        Dim vec = New iVector2(x, y)
-        Dim tmp = vec.deref()
-        If (tmp <> iVector2.OFF_BOARD) Then
-            movements.Add(New MoveData(vec, tmp))
-        End If
-
+        Add(vec.x, vec.y)
     End Sub
 
 
 
 
+    Private xmaps As String() = {"a", "b", "c", "d", "e", "f", "g", "h"}
+    Private ymaps As String() = {"1", "2", "3", "4", "5", "6", "7", "8"}
 
     Public Sub Print()
         For Each v In movements
-            Debug.Print("{0}{1}", Form1.xmaps(v.target.x), Form1.ymaps(v.target.y))
+            Debug.Print("{0}{1}", xmaps(v.target.x), ymaps(v.target.y))
         Next
 
     End Sub

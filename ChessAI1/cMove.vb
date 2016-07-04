@@ -5,7 +5,12 @@ Public Class cMove
 
     Private HasNotMoved As New Dictionary(Of String, Boolean)
 
-    Sub New()
+    Private b As Chessboard
+
+    Sub New(board As Chessboard)
+
+        b = board
+
         ' Set up all the castle flags
         HasNotMoved.Add("WQ", True)
         HasNotMoved.Add("WK", True)
@@ -38,8 +43,8 @@ Public Class cMove
     End Function
 
     Private Function CalculateMoves(pos As iVector2) As Movements
-        Dim retval As New Movements
-        Dim type As Integer = pos.deref()
+        Dim retval As New Movements(b)
+        Dim type As Integer = b.at(pos)
 
 
         Select Case Math.Abs(type)
@@ -52,17 +57,17 @@ Public Class cMove
 
                     End If
                     ' Standard movement
-                    If Form1.board(pos.x, pos.y - 1) = 0 Then
+                    If b.at(pos.x, pos.y - 1) = 0 Then
                         retval.Add(pos.x, pos.y - 1)
                     End If
 
 
 
-                    If pos.x > 0 AndAlso Form1.board(pos.x - 1, pos.y - 1) < 0 Then
+                    If pos.x > 0 AndAlso b.at(pos.x - 1, pos.y - 1) < 0 Then
 
                         retval.Add(pos.x - 1, pos.y - 1)
 
-                    ElseIf pos.x < 7 AndAlso Form1.board(pos.x + 1, pos.y - 1) < 0 Then
+                    ElseIf pos.x < 7 AndAlso b.at(pos.x + 1, pos.y - 1) < 0 Then
                         retval.Add(pos.x + 1, pos.y - 1)
 
                     End If
@@ -76,19 +81,19 @@ Public Class cMove
 
                     End If
                     ' Standard movement
-                    If Form1.board(pos.x, pos.y + 1) = 0 Then
+                    If b.at(pos.x, pos.y + 1) = 0 Then
                         retval.Add(pos.x, pos.y + 1)
                     End If
 
 
 
                     'capture
-                    If pos.x > 0 AndAlso Form1.board(pos.x - 1, pos.y + 1) > 0 Then
+                    If pos.x > 0 AndAlso b.at(pos.x - 1, pos.y + 1) > 0 Then
 
                         retval.Add(pos.x - 1, pos.y + 1)
 
 
-                    ElseIf pos.x < 7 AndAlso Form1.board(pos.x + 1, pos.y + 1) > 0 Then
+                    ElseIf pos.x < 7 AndAlso b.at(pos.x + 1, pos.y + 1) > 0 Then
 
                         retval.Add(pos.x + 1, pos.y + 1)
 
@@ -103,7 +108,7 @@ Public Class cMove
                 For i As Integer = 0 To 7
                     Dim v = New iVector2(positions(i, 0), positions(i, 1))
                     v.Addition(pos)
-                    If (v.deref() * type <= 0) Then
+                    If (b.at(v) * type <= 0) Then
                         retval.Add(v)
                     End If
                 Next
@@ -113,7 +118,7 @@ Public Class cMove
                 'bishop or queen
                 For i = 1 To 7
                     'up and left
-                    If pos.x - i <= -1 Or pos.y - i <= -1 Or pos.Plus(-i, -i).deref() * type > 0 Then
+                    If pos.x - i <= -1 Or pos.y - i <= -1 Or b.at(pos.Plus(-i, -i)) * type > 0 Then
                         'same colour, can't go any further
                         Exit For
 
@@ -121,7 +126,7 @@ Public Class cMove
 
                         retval.Add(pos.x - i, pos.y - i)
 
-                        If pos.Plus(-i, -i).deref() * type < 0 Then
+                        If b.at(pos.Plus(-i, -i)) * type < 0 Then
                             ' different colour, save this spot then leave
                             Exit For
                         End If
@@ -132,7 +137,7 @@ Public Class cMove
 
                 For i = 1 To 7
                     'up and right
-                    If pos.x + i >= 8 Or pos.y - i <= -1 Or pos.Plus(i, -i).deref() * type > 0 Then
+                    If pos.x + i >= 8 Or pos.y - i <= -1 Or b.at(pos.Plus(i, -i)) * type > 0 Then
                         'same colour, can't go any further
                         Exit For
 
@@ -140,7 +145,7 @@ Public Class cMove
                     Else
                         retval.Add(pos.x + i, pos.y - i)
 
-                        If pos.Plus(i, -i).deref() * type < 0 Then
+                        If b.at(pos.Plus(i, -i)) * type < 0 Then
                             ' different colour, save this spot then leave
                             Exit For
                         End If
@@ -150,14 +155,14 @@ Public Class cMove
 
                 For i = 1 To 7
                     'down and left
-                    If pos.x - i <= -1 Or pos.y + i >= 8 Or pos.Plus(-i, i).deref() * type > 0 Then
+                    If pos.x - i <= -1 Or pos.y + i >= 8 Or b.at(pos.Plus(-i, i)) * type > 0 Then
                         'same colour, can't go any further
                         Exit For
 
                     Else
                         retval.Add(pos.x - i, pos.y + i)
 
-                        If pos.Plus(-i, i).deref() * type < 0 Then
+                        If b.at(pos.Plus(-i, i)) * type < 0 Then
                             ' different colour, save this spot then leave
                             Exit For
                         End If
@@ -166,13 +171,13 @@ Public Class cMove
 
                 For i = 1 To 7
                     'down and right
-                    If pos.x + i >= 8 Or pos.y + i >= 8 Or pos.Plus(i, i).deref() * type > 0 Then
+                    If pos.x + i >= 8 Or pos.y + i >= 8 Or b.at(pos.Plus(i, i)) * type > 0 Then
                         'same colour, can't go any further
                         Exit For
 
                     Else
                         retval.Add(pos.x + i, pos.y + i)
-                        If pos.Plus(i, i).deref() * type < 0 Then
+                        If b.at(pos.Plus(i, i)) * type < 0 Then
                             ' different colour, save this spot then leave
                             Exit For
                         End If
@@ -181,16 +186,16 @@ Public Class cMove
 
             'Case 4
             '    ' rook castling
-            '    If pos.isAt(7, 7) AndAlso Form1.board(6, 7) = 0 AndAlso HasNotMoved("WK") Then
+            '    If pos.isAt(7, 7) AndAlso b.at(6, 7) = 0 AndAlso HasNotMoved("WK") Then
             '        ' White Kingside Castle
             '        retval.Add(5, 7)
-            '    ElseIf pos.isAt(0, 7) AndAlso Form1.board(1, 7) = 0 AndAlso Form1.board(2, 7) = 0 AndAlso HasNotMoved("WQ") Then
+            '    ElseIf pos.isAt(0, 7) AndAlso b.at(1, 7) = 0 AndAlso b.at(2, 7) = 0 AndAlso HasNotMoved("WQ") Then
             '        ' White Queenside Castle
             '        retval.Add(3, 7)
-            '    ElseIf pos.isAt(0, 0) AndAlso Form1.board(6, 0) = 0 AndAlso HasNotMoved("BK") Then
+            '    ElseIf pos.isAt(0, 0) AndAlso b.at(6, 0) = 0 AndAlso HasNotMoved("BK") Then
             '        'Black Queenside Castle
             '        retval.Add(5, 0)
-            '    ElseIf pos.isAt(7, 0) AndAlso Form1.board(1, 0) = 0 AndAlso Form1.board(2, 0) = 0 AndAlso HasNotMoved("BQ") Then
+            '    ElseIf pos.isAt(7, 0) AndAlso b.at(1, 0) = 0 AndAlso b.at(2, 0) = 0 AndAlso HasNotMoved("BQ") Then
             '        ' Black Queenside Castle
             '        retval.Add(3, 0)
             '    End If
@@ -199,7 +204,7 @@ Public Class cMove
                 'rook or queen
                 For i = 1 To 7
                     ' up
-                    If pos.y - i <= -1 Or pos.Plus(0, -i).deref() * type > 0 Then
+                    If pos.y - i <= -1 Or b.at(pos.Plus(0, -i)) * type > 0 Then
                         'same colour, can't go any further
                         Exit For
 
@@ -207,7 +212,7 @@ Public Class cMove
 
                         retval.Add(pos.x, pos.y - i)
 
-                        If pos.Plus(0, -i).deref() * type < 0 Then
+                        If b.at(pos.Plus(0, -i)) * type < 0 Then
                             ' different colour, save this spot then leave
                             Exit For
                         End If
@@ -218,7 +223,7 @@ Public Class cMove
 
                 For i = 1 To 7
                     ' right
-                    If pos.x + i >= 8 Or pos.Plus(i, 0).deref() * type > 0 Then
+                    If pos.x + i >= 8 Or b.at(pos.Plus(i, 0)) * type > 0 Then
                         'same colour, can't go any further
                         Exit For
 
@@ -226,7 +231,7 @@ Public Class cMove
                     Else
                         retval.Add(pos.x + i, pos.y)
 
-                        If pos.Plus(i, 0).deref() * type < 0 Then
+                        If b.at(pos.Plus(i, 0)) * type < 0 Then
                             ' different colour, save this spot then leave
                             Exit For
                         End If
@@ -236,14 +241,14 @@ Public Class cMove
 
                 For i = 1 To 7
                     ' left
-                    If pos.x - i <= -1 Or pos.Plus(-i, 0).deref() * type > 0 Then
+                    If pos.x - i <= -1 Or b.at(pos.Plus(-i, 0)) * type > 0 Then
                         'same colour, can't go any further
                         Exit For
 
                     Else
                         retval.Add(pos.x - i, pos.y)
 
-                        If pos.Plus(-i, 0).deref() * type < 0 Then
+                        If b.at(pos.Plus(-i, 0)) * type < 0 Then
                             ' different colour, save this spot then leave
                             Exit For
                         End If
@@ -252,13 +257,13 @@ Public Class cMove
 
                 For i = 1 To 7
                     'down
-                    If pos.y + i >= 8 Or pos.Plus(0, i).deref() * type > 0 Then
+                    If pos.y + i >= 8 Or b.at(pos.Plus(0, i)) * type > 0 Then
                         'same colour, can't go any further
                         Exit For
 
                     Else
                         retval.Add(pos.x, pos.y + i)
-                        If pos.Plus(0, i).deref() * type < 0 Then
+                        If b.at(pos.Plus(0, i)) * type < 0 Then
                             ' different colour, save this spot then leave
                             Exit For
                         End If
@@ -277,21 +282,21 @@ Public Class cMove
                 ' King Castling
                 If type > 0 Then
                     ' White castling
-                    If HasNotMoved("WK") AndAlso Form1.board(5, 7) = 0 AndAlso Form1.board(6, 7) = 0 Then
+                    If HasNotMoved("WK") AndAlso b.at(5, 7) = 0 AndAlso b.at(6, 7) = 0 Then
                         'White king-side caslting valid
                         retval.Add(6, 7)
                     End If
-                    If HasNotMoved("WQ") AndAlso Form1.board(1, 7) = 0 AndAlso Form1.board(2, 7) = 0 AndAlso Form1.board(3, 7) = 0 Then
+                    If HasNotMoved("WQ") AndAlso b.at(1, 7) = 0 AndAlso b.at(2, 7) = 0 AndAlso b.at(3, 7) = 0 Then
                         'White queen-side caslting valid
                         retval.Add(2, 7)
                     End If
                 Else
                     ' Black castling
-                    If HasNotMoved("BK") AndAlso Form1.board(1, 0) = 0 AndAlso Form1.board(2, 0) = 0 Then
+                    If HasNotMoved("BK") AndAlso b.at(1, 0) = 0 AndAlso b.at(2, 0) = 0 Then
                         'Black king-side caslting valid
                         retval.Add(1, 0)
                     End If
-                    If HasNotMoved("BQ") AndAlso Form1.board(6, 0) = 0 AndAlso Form1.board(5, 0) = 0 AndAlso Form1.board(4, 0) = 0 Then
+                    If HasNotMoved("BQ") AndAlso b.at(6, 0) = 0 AndAlso b.at(5, 0) = 0 AndAlso b.at(4, 0) = 0 Then
                         'Black queen-side caslting valid
                         retval.Add(5, 0)
                     End If

@@ -5,8 +5,10 @@ Public Class Form1
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
 
-    Private MoveGen As New cMove
-    Public WhiteBottom As Boolean
+    Public Board As New Chessboard(False)
+
+    Private MoveGen As New cMove(Board)
+
 
     'Constant declerations
     Const SQR As Integer = 60
@@ -17,16 +19,13 @@ Public Class Form1
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '''''''''''''''''DEBUG CODE''''''''''''''''''''''''''''
 
-    Public xmaps As String() = {"a", "b", "c", "d", "e", "f", "g", "h"}
-    Public ymaps As String() = {"1", "2", "3", "4", "5", "6", "7", "8"}
+
 
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     ' 1 = pawn, 2=kinght, 3=bishop, 4=rook, 5=queen, 6=king
 
-    Public board(7, 7) As Integer
-    Const OFF_BOARD As Integer = 1000
-    Private SelectedPiece As New iVector2(6, 7)
+
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -35,54 +34,15 @@ Public Class Form1
 
         ' Initialise everthing
         DoubleBuffered = True
-        Dim i, j As Integer
 
-        For i = 0 To 7
-            For j = 0 To 7
-                board(i, j) = 0
-            Next
-        Next
-
-        ' Pawns
-        For i = 0 To 7
-            board(i, 1) = -1
-            board(i, 6) = 1
-        Next
-
-        ' Knights
-        board(1, 0) = -2
-        board(6, 0) = -2
-        board(1, 7) = 2
-        board(6, 7) = 2
-
-        ' Bishops
-        board(2, 0) = -3
-        board(5, 0) = -3
-        board(2, 7) = 3
-        board(5, 7) = 3
-
-        ' Rooks
-        board(0, 0) = -4
-        board(7, 0) = -4
-        board(0, 7) = 4
-        board(7, 7) = 4
-
-        ' Queens
-        board(3, 0) = -5
-        board(3, 7) = 5
-
-        ' Kings
-        board(4, 7) = 6
-        board(4, 0) = -6
 
         '''''''''''''''''''''''''''''''''''''''''''''''''''
         '''''''''''''''''''' DEBUG CODE ''''''''''''''''''' 
 
         Debug.Print("======== DEBUG ========")
-        WhiteBottom = True ' assume black at the bottom
 
 
-        Dim tmp As Movements
+
 
         MoveGen.UpdateMoves()
 
@@ -103,9 +63,15 @@ Public Class Form1
 
     End Sub
 
-    Private Function toRect(vec As iVector2) As Rectangle
-        Return New Rectangle(SQR * vec.x + H_DISP, SQR * vec.y + V_DISP, SQR, SQR)
+    Private Function toRect(x As Integer, y As Integer) As Rectangle
+        Return New Rectangle(SQR * x + H_DISP, SQR * y + V_DISP, SQR, SQR)
     End Function
+
+    Private Function toRect(vec As iVector2) As Rectangle
+        Return toRect(vec.x, vec.y)
+    End Function
+
+    Private highlights(7, 7) As Boolean
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
@@ -129,29 +95,18 @@ Public Class Form1
             For i_x = 0 To 7
                 For i_y = 0 To 7
 
-                    b_here.store(i_x, i_y)
-                    r = toRect(b_here)
+                    ' Using board coordinates
+                    r = toRect(i_x, i_y)
 
-                    If (b_here.Index() + b_here.y) Mod 2 = 0 Then
+                    If highlights(i_x, i_y) Then
+                        .FillRectangle(b_highlight, r)
+                    ElseIf (i_x + 9 * i_y) Mod 2 = 0 Then
                         .FillRectangle(b_white, r)
                     Else
                         .FillRectangle(b_black, r)
                     End If
 
-                    Dim possibleMoves As New Movements
-                    Dim here = New iVector2(i_x, i_y)
 
-                    If WhiteBottom = True Then
-                        here.ChangeCoords()
-                    End If
-
-                    possibleMoves = MoveGen.GetMoves(SelectedPiece)
-
-                    For Each move As Movements.MoveData In possibleMoves
-                        move.target.ChangeCoords()
-                        'Debug.Print(move.target.ToString())
-                        .FillRectangle(b_highlight, toRect(move.target))
-                    Next
 
                     'check if mouse is hovering over rendered square
                     If r.Contains(PointToClient(MousePosition)) Then
@@ -187,25 +142,24 @@ Public Class Form1
             For v = 0 To 7
                 For h = 0 To 7
 
-                    pos = New iVector2(h, v)
+                    Dim i As Integer = Board.at(h, v)
 
-                    Dim i As Integer = pos.deref()
-
-                    pos.ChangeCoords()
-
-                    .SmoothingMode = SmoothingMode.AntiAlias
-                    piece_char = piece_array(Math.Abs(i))
-                    If i < 0 Then
-                        Using gp As New GraphicsPath()
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
-                            .FillPath(Brushes.Black, gp)
-                        End Using
-                    Else
-                        Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
-                            gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
-                            .DrawPath(p, gp)
-                            .FillPath(Brushes.White, gp)
-                        End Using
+                    If i <> Board.OFF_BOARD Then
+                        pos = Board.display(h, v)
+                        .SmoothingMode = SmoothingMode.AntiAlias
+                        piece_char = piece_array(Math.Abs(i))
+                        If i < 0 Then
+                            Using gp As New GraphicsPath()
+                                gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                                .FillPath(Brushes.Black, gp)
+                            End Using
+                        Else
+                            Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
+                                gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                                .DrawPath(p, gp)
+                                .FillPath(Brushes.White, gp)
+                            End Using
+                        End If
                     End If
                 Next
             Next
@@ -217,22 +171,54 @@ Public Class Form1
         Refresh()
     End Sub
 
+
+
     Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
-        Dim h As New iVector2
         Dim r As Rectangle
+        Dim vec As iVector2
+        Dim sgn As Integer
 
         For i_x = 0 To 7
             For i_y = 0 To 7
-                h.store(i_x, i_y)
-                r = toRect(h)
+                highlights(i_x, i_y) = False
+            Next
+        Next
+
+        For i_x = 0 To 7
+            For i_y = 0 To 7
+
+                vec = Board.display(i_x, i_y)
+                r = toRect(vec)
 
                 If r.Contains(PointToClient(MousePosition)) Then
-                    SelectedPiece = h
-                    Debug.Print(SelectedPiece.ToString)
+
+                    Dim possibleMoves As New Movements(Board)
+
+                    possibleMoves = MoveGen.GetMoves(i_x, i_y)
+
+                    highlights(vec.x, vec.y) = True
+
+                    If Board.WhiteBottom Then
+                        sgn = 1
+                    Else
+                        sgn = -1
+                    End If
+
+                    If Board.at(i_x, i_y) * sgn > 0 Then
+                        For Each move As Movements.MoveData In possibleMoves
+
+                            Debug.Print(move.target.ToString())
+                            vec = Board.display(move.target)
+                            highlights(vec.x, vec.y) = True
+
+                        Next
+                    End If
                 End If
 
             Next
         Next
+
+
         Refresh()
     End Sub
 End Class
