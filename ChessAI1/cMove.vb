@@ -45,7 +45,7 @@ Public Class cMove
     Private Function CalculateMoves(pos As iVector2) As Movements
         Dim retval As New Movements(b)
         Dim type As Integer = b.at(pos)
-
+        Dim v As New iVector2
 
         Select Case Math.Abs(type)
             Case 1
@@ -106,7 +106,7 @@ Public Class cMove
                 'horsey
                 Dim positions(,) As Integer = New Integer(7, 1) {{1, 2}, {2, 1}, {-1, 2}, {2, -1}, {-1, -2}, {-2, -1}, {1, -2}, {-2, 1}}
                 For i As Integer = 0 To 7
-                    Dim v = New iVector2(positions(i, 0), positions(i, 1))
+                    v.store(positions(i, 0), positions(i, 1))
                     v.Addition(pos)
                     If (b.at(v) * type <= 0) Then
                         retval.Add(v)
@@ -276,7 +276,11 @@ Public Class cMove
                 ' standard moves
                 Dim positions(,) As Integer = New Integer(7, 1) {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
                 For i As Integer = 0 To 7
-                    retval.Add(positions(i, 0) + pos.x, positions(i, 1) + pos.y)
+                    v.store(positions(i, 0), positions(i, 1))
+                    v.Addition(pos)
+                    If (b.at(v) * type <= 0) Then
+                        retval.Add(v)
+                    End If
                 Next
 
                 ' King Castling
