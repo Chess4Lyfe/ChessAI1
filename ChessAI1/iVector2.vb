@@ -7,14 +7,17 @@ Public Class iVector2
     Public x As Integer
     Public y As Integer
 
+    Public IsBackend As Boolean = True
+
     Public Sub store(newX As Integer, newY As Integer)
         x = newX
         y = newY
     End Sub
 
-    Sub New(Optional newX As Integer = OFF_BOARD, Optional newY As Integer = OFF_BOARD)
+    Sub New(Optional newX As Integer = OFF_BOARD, Optional newY As Integer = OFF_BOARD, Optional isBack As Boolean = Nothing)
         If newX <> OFF_BOARD AndAlso newY <> OFF_BOARD Then
             store(newX, newY)
+            IsBackend = isBack
         End If
     End Sub
 
@@ -76,10 +79,27 @@ Public Class iVector2
     End Function
 
 
-    Public Sub ChangeCoords()
-        If Not Form1.WhiteBottom Then
-            x = 7 - x
-            y = 7 - y
+    Public Sub ToBackend()
+        If IsBackend = Nothing Then
+            IsBackend = True
+        ElseIf IsBackend = False Then
+            IsBackend = True
+            If Not Form1.WhiteBottom Then
+                x = 7 - x
+                y = 7 - y
+            End If
+        End If
+    End Sub
+
+    Public Sub ToFrontend()
+        If IsBackend = Nothing Then
+            IsBackend = False
+        ElseIf IsBackend = True Then
+            IsBackend = False
+            If Not Form1.WhiteBottom Then
+                x = 7 - x
+                y = 7 - y
+            End If
         End If
     End Sub
 

@@ -80,7 +80,7 @@ Public Class Form1
         '''''''''''''''''''' DEBUG CODE ''''''''''''''''''' 
 
         Debug.Print("======== DEBUG ========")
-        WhiteBottom = True ' assume black at the bottom
+        WhiteBottom = False ' assume black at the bottom
 
 
         Dim tmp As Movements
@@ -91,7 +91,7 @@ Public Class Form1
         '    For j = 0 To 7
         '        ' Find all moves for every square
         '        Dim checker = New iVector2(j, i)
-        '        checker.ChangeCoords()
+        '        checker.toFrontend()
         '        Debug.Print("Checking move {0}{1}", xmaps(checker.x), ymaps(checker.y))
         '        tmp = MoveGen.GetMoves(checker)
         '        tmp.Print()
@@ -125,7 +125,6 @@ Public Class Form1
             ' I'm not using Using, sue me 
             Dim b_white As New SolidBrush(Color.FromArgb(189, 204, 222))
             Dim b_black As New SolidBrush(Color.FromArgb(82, 128, 139))
-            Dim b_highlight As New SolidBrush(Color.FromArgb(64, 201, 222))
 
             Dim r As Rectangle
             Dim typ As Integer
@@ -138,58 +137,63 @@ Public Class Form1
 
                     r = toRect(b_here)
 
+                    If (b_here.Index() + b_here.y) Mod 2 = 0 Then
+                        .FillRectangle(b_white, r)
+                    Else
+                        .FillRectangle(b_black, r)
+                    End If
+                Next
+            Next
 
+            Using b_highlight As New SolidBrush(Color.FromArgb(64, 201, 222))
 
-                    'check if mouse is hovering over rendered square
-                    If r.Contains(PointToClient(MousePosition)) Then
-                        Dim possibleMoves As New Movements
-                        Dim here = New iVector2(i_x, i_y)
-                        here.ChangeCoords()
-                        typ = here.deref()
+                For i_x = 0 To 7
+                    For i_y = 0 To 7
 
-                        If WhiteBottom Then
-                            If typ > 0 Then
-                                'playing as white
-                                possibleMoves = MoveGen.GetMoves(here)
+                        b_here.store(i_x, i_y)
+                        r = toRect(b_here)
 
-                            End If
-                        Else
-                            If typ < 0 Then
-                                'playing as black
-                                possibleMoves = MoveGen.GetMoves(here)
+                        'check if mouse is hovering over rendered square
+                        If r.Contains(PointToClient(MousePosition)) Then
+                            Dim possibleMoves As New Movements
+                            Dim here = New iVector2(i_x, i_y, False)
+
+                            here.ToBackend()
+                            typ = here.deref()
+
+                            If WhiteBottom Then
+                                If typ > 0 Then
+                                    'playing as white
+                                    possibleMoves = MoveGen.GetMoves(here)
+
+                                End If
+                            Else
+                                If typ < 0 Then
+                                    'playing as black
+                                    possibleMoves = MoveGen.GetMoves(here)
+
+                                End If
                             End If
 
                             .FillRectangle(b_highlight, r)
+
+                            For Each move As Movements.MoveData In possibleMoves
+                                move.target.ToFrontend()
+
+                                .FillRectangle(b_highlight, toRect(move.target))
+                            Next
+
+
+
                         End If
 
-                        Debug.Print(possibleMoves.toString())
-
-
-                        For Each move As Movements.MoveData In possibleMoves
-                            move.target.ChangeCoords()
-
-                            .FillRectangle(b_highlight, toRect(move.target))
-                        Next
-
-
-                    Else
-
-                        If (b_here.Index() + b_here.y) Mod 2 = 0 Then
-                            .FillRectangle(b_white, r)
-                        Else
-                            .FillRectangle(b_black, r)
-                        End If
-
-
-                    End If
-
+                    Next
                 Next
-            Next
+            End Using
 
             ' Clean up
             b_white.Dispose()
             b_black.Dispose()
-            b_highlight.Dispose()
 
             'Draw column/row labels
             Using b_gold As New SolidBrush(Color.FromArgb(82, 129, 142))
@@ -214,10 +218,11 @@ Public Class Form1
                 For h = 0 To 7
 
                     pos = New iVector2(h, v)
+                    pos.ToBackend()
 
                     Dim i As Integer = pos.deref()
 
-                    pos.ChangeCoords()
+                    pos.ToFrontend()
 
                     .SmoothingMode = SmoothingMode.AntiAlias
                     piece_char = piece_array(Math.Abs(i))
