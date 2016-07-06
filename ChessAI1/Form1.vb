@@ -172,7 +172,7 @@ Public Class Form1
 
 
 
-    Private Function SelectPiece(position As iVector2)
+    Private Sub SelectPiece(position As iVector2)
         ' Check valid side
         Dim sgn As Integer
         If Board.WhiteBottom Then
@@ -189,18 +189,18 @@ Public Class Form1
             isSelected = False
         End If
 
-    End Function
+    End Sub
 
-    Private Function clear_highlight()
+    Private Sub clear_highlight()
         ' Clears all highlights
         For i_x = 0 To 7
             For i_y = 0 To 7
                 highlights(i_x, i_y) = False
             Next
         Next
-    End Function
+    End Sub
 
-    Private Function highlight_piece(isClick As Boolean)
+    Private Sub highlight_piece(isClick As Boolean)
         Dim vec As iVector2
         Dim r As Rectangle
         Dim sgn As Integer
@@ -235,7 +235,7 @@ Public Class Form1
                         If possiblemoves.Count = 0 Then
                             isSelected = False
                             Refresh()
-                            Exit Function
+                            Exit Sub
                         End If
                         For Each move As Movements.MoveData In possiblemoves
 
@@ -248,11 +248,10 @@ Public Class Form1
                 End If
             Next
         Next
-    End Function
+    End Sub
 
     Private Sub Form1_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
         'Highlights where mouse is
-        Dim vec As iVector2
 
         ' Piece selected, stopping normal highlighting
         If isSelected Then
@@ -268,9 +267,6 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
-        Dim r As Rectangle
-        Dim vec As iVector2
-        Dim sgn As Integer
 
         ' Rightclick feature to de-select peice
         If e.Button = MouseButtons.Right Then
