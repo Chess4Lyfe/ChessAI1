@@ -5,7 +5,7 @@ Public Class Form1
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
 
-    Public Board As New Chessboard(True)
+    Public Board As New Chessboard(False)
 
     Private MoveGen As New cMove(Board)
 
@@ -173,6 +173,8 @@ Public Class Form1
 
 
     Private Sub SelectPiece(position As iVector2)
+        ' position is in display coordinates
+
         ' Check valid side
         Dim sgn As Integer
         If Board.WhiteBottom Then
@@ -182,8 +184,8 @@ Public Class Form1
         End If
 
         ' Check if valid piece is at position
-        Dim piece = Board.at(position)
-        If piece AndAlso (piece * sgn) > 0 Then
+        Dim piece = Board.at(Board.display(position))
+        If (piece * sgn) > 0 Then
             isSelected = True
         Else
             isSelected = False
