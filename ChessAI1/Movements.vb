@@ -11,9 +11,10 @@ Public Class Movements
     Public Class MoveData
         Implements IComparable
 
-        Public target As iVector2
-        Public Property virtue As Integer
-        Public castle As Byte
+        Public target As iVector2 ' the square to move to
+        Public virtue As Integer
+        Public castle As Byte ' the castle move type
+        ' 0 = no castle, 1 = w queenside, 2 = w kingside, 3 = b queenside, 4 = b kingside
 
         Sub New(place As iVector2, value As Integer, Optional castles As Byte = 0)
             target = place
@@ -35,7 +36,7 @@ Public Class Movements
                 Return Me.target.Index() - otherMove.target.Index()
             Else
                 Return Me.target.Index() - otherMove.target.Index() +
-                    64 + castle
+                    128 + castle
             End If
         End Function
 
@@ -44,7 +45,7 @@ Public Class Movements
         ' "this will get huuuuuuuuuge later" - Donald Trump
         Private Function value(pos As iVector2) As Integer
             'TODO: castling properly
-            If True Then
+            If castle = 0 Then
                 ' Not a castle move
                 Dim tmp = b.at(pos)
                 Return pieceValue(Math.Abs(b.at(pos)))
@@ -110,11 +111,11 @@ Public Class Movements
         End Function
     End Class
 
-    Public Sub Add(x As Integer, y As Integer)
+    Public Sub Add(x As Integer, y As Integer, Optional castles As Byte = 0)
         Dim vec = New iVector2(x, y)
         Dim tmp = b.at(vec)
         If b.OFF_BOARD <> tmp Then
-            movements.Add(New MoveData(vec, tmp))
+            movements.Add(New MoveData(vec, tmp, castles))
         End If
     End Sub
 

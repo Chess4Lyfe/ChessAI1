@@ -179,6 +179,28 @@ Public Class cMove
 
             Case 4
                 ' rook castling
+                If type <> 0 Then
+                    If type > 0 Then
+                        ' white
+                        If pos.isAt(0, 7) AndAlso b.HasNotMoved(1) AndAlso b.at(1, 7) = 0 AndAlso b.at(2, 7) = 0 AndAlso b.at(3, 7) = 0 Then
+                            ' white queenside
+                            retval.Add(3, 7, 1)
+                        ElseIf pos.isAt(7, 7) AndAlso b.HasNotMoved(2) AndAlso b.at(5, 7) = 0 AndAlso b.at(6, 7) = 0 Then
+                            ' white kingside
+                            retval.Add(5, 7, 2)
+                        End If
+                    Else
+                        ' black
+                        If pos.isAt(0, 0) AndAlso b.HasNotMoved(3) AndAlso b.at(1, 0) = 0 AndAlso b.at(2, 0) = 0 AndAlso b.at(3, 0) = 0 Then
+                            ' black queenside
+                            retval.Add(3, 0, 3)
+                        ElseIf pos.isAt(7, 0) AndAlso b.HasNotMoved(4) AndAlso b.at(5, 0) = 0 AndAlso b.at(6, 0) = 0 Then
+                            ' black kingside
+                            retval.Add(5, 0, 4)
+                        End If
+                    End If
+
+                End If
 
 
 
@@ -266,27 +288,28 @@ Public Class cMove
                 Next
 
                 ' King Castling
-                'If type > 0 Then
-                '    ' White castling
-                '    If HasNotMoved("WK") AndAlso b.at(5, 7) = 0 AndAlso b.at(6, 7) = 0 Then
-                '        'White king-side caslting valid
-                '        retval.Add(6, 7)
-                '    End If
-                '    If HasNotMoved("WQ") AndAlso b.at(1, 7) = 0 AndAlso b.at(2, 7) = 0 AndAlso b.at(3, 7) = 0 Then
-                '        'White queen-side caslting valid
-                '        retval.Add(2, 7)
-                '    End If
-                'Else
-                '    ' Black castling
-                '    If HasNotMoved("BK") AndAlso b.at(1, 0) = 0 AndAlso b.at(2, 0) = 0 Then
-                '        'Black king-side caslting valid
-                '        retval.Add(1, 0)
-                '    End If
-                '    If HasNotMoved("BQ") AndAlso b.at(6, 0) = 0 AndAlso b.at(5, 0) = 0 AndAlso b.at(4, 0) = 0 Then
-                '        'Black queen-side caslting valid
-                '        retval.Add(5, 0)
-                '    End If
-                'End If
+                If type <> 0 Then
+                    If type > 0 AndAlso pos.isAt(4, 7) Then
+                        ' white
+                        If b.HasNotMoved(1) AndAlso b.at(1, 7) = 0 AndAlso b.at(2, 7) = 0 AndAlso b.at(3, 7) = 0 Then
+                            ' white queenside
+                            retval.Add(2, 7, 1)
+                        ElseIf b.HasNotMoved(2) AndAlso b.at(5, 7) = 0 AndAlso b.at(6, 7) = 0 Then
+                            ' white kingside
+                            retval.Add(6, 7, 2)
+                        End If
+                    ElseIf pos.isAt(4, 0) Then
+                        ' black
+                        If b.HasNotMoved(3) AndAlso b.at(1, 0) = 0 AndAlso b.at(2, 0) = 0 AndAlso b.at(3, 0) = 0 Then
+                            ' black queenside
+                            retval.Add(2, 0, 3)
+                        ElseIf b.HasNotMoved(4) AndAlso b.at(5, 0) = 0 AndAlso b.at(6, 0) = 0 Then
+                            ' black kingside
+                            retval.Add(6, 0, 4)
+                        End If
+                    End If
+
+                End If
 
         End Select
         Return retval
