@@ -168,57 +168,98 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
-        Refresh()
-    End Sub
+		Dim r As Rectangle
+		Dim vec As iVector2
+		Dim sgn As Integer
+
+		For i_x = 0 To 7
+			For i_y = 0 To 7
+				highlights(i_x, i_y) = False
+			Next
+		Next
+
+		For i_x = 0 To 7
+			For i_y = 0 To 7
+
+				vec = Board.display(i_x, i_y)
+				r = toRect(vec)
+
+				If r.Contains(PointToClient(MousePosition)) Then
+
+					Dim possibleMoves As New Movements(Board)
+
+					possibleMoves = MoveGen.GetMoves(i_x, i_y)
+
+					highlights(vec.x, vec.y) = True
+
+					If Board.WhiteBottom Then
+						sgn = 1
+					Else
+						sgn = -1
+					End If
+
+					If Board.at(i_x, i_y) * sgn > 0 Then
+						For Each move As Movements.MoveData In possibleMoves
+
+							Debug.Print(move.target.ToString())
+							vec = Board.display(move.target)
+							highlights(vec.x, vec.y) = True
+
+						Next
+					End If
+				End If
+
+			Next
+		Next
+		Refresh()
+	End Sub
 
 
 
     Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
-        Dim r As Rectangle
-        Dim vec As iVector2
-        Dim sgn As Integer
+		'Dim r As Rectangle
+		'Dim vec As iVector2
+		'Dim sgn As Integer
 
-        For i_x = 0 To 7
-            For i_y = 0 To 7
-                highlights(i_x, i_y) = False
-            Next
-        Next
+		'For i_x = 0 To 7
+		'	For i_y = 0 To 7
+		'		highlights(i_x, i_y) = False
+		'	Next
+		'Next
 
-        For i_x = 0 To 7
-            For i_y = 0 To 7
+		'For i_x = 0 To 7
+		'	For i_y = 0 To 7
 
-                vec = Board.display(i_x, i_y)
-                r = toRect(vec)
+		'		vec = Board.display(i_x, i_y)
+		'		r = toRect(vec)
 
-                If r.Contains(PointToClient(MousePosition)) Then
+		'		If r.Contains(PointToClient(MousePosition)) Then
 
-                    Dim possibleMoves As New Movements(Board)
+		'			Dim possibleMoves As New Movements(Board)
 
-                    possibleMoves = MoveGen.GetMoves(i_x, i_y)
+		'			possibleMoves = MoveGen.GetMoves(i_x, i_y)
 
-                    highlights(vec.x, vec.y) = True
+		'			highlights(vec.x, vec.y) = True
 
-                    If Board.WhiteBottom Then
-                        sgn = 1
-                    Else
-                        sgn = -1
-                    End If
+		'			If Board.WhiteBottom Then
+		'				sgn = 1
+		'			Else
+		'				sgn = -1
+		'			End If
 
-                    If Board.at(i_x, i_y) * sgn > 0 Then
-                        For Each move As Movements.MoveData In possibleMoves
+		'			If Board.at(i_x, i_y) * sgn > 0 Then
+		'				For Each move As Movements.MoveData In possibleMoves
 
-                            Debug.Print(move.target.ToString())
-                            vec = Board.display(move.target)
-                            highlights(vec.x, vec.y) = True
+		'					Debug.Print(move.target.ToString())
+		'					vec = Board.display(move.target)
+		'					highlights(vec.x, vec.y) = True
 
-                        Next
-                    End If
-                End If
+		'				Next
+		'			End If
+		'		End If
 
-            Next
-        Next
-
-
-        Refresh()
+		'	Next
+		'Next
+		Refresh()
     End Sub
 End Class
