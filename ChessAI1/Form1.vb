@@ -5,9 +5,9 @@ Public Class Form1
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
 
-	Public Board As New Chessboard(True)
+    Public Board As New Chessboard(True)
 
-	Private MoveGen As New cMove(Board)
+    Private MoveGen As New cMove(Board)
 
 
     'Constant declerations
@@ -73,226 +73,226 @@ Public Class Form1
 
     Private highlights(7, 7) As Boolean
 
-	Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
-		With e.Graphics
+    Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
+        With e.Graphics
             'Draw border
             Using b_brown As New SolidBrush(Color.FromArgb(21, 38, 41))
-				.FillRectangle(b_brown, New Rectangle(H_DISP - B_THICKNESS, V_DISP - B_THICKNESS, SQR * 8 + (2 * B_THICKNESS), SQR * 8 + (2 * B_THICKNESS)))
-			End Using
+                .FillRectangle(b_brown, New Rectangle(H_DISP - B_THICKNESS, V_DISP - B_THICKNESS, SQR * 8 + (2 * B_THICKNESS), SQR * 8 + (2 * B_THICKNESS)))
+            End Using
 
-			Dim b_here As New iVector2
+            Dim b_here As New iVector2
             'b_here is here in board coords
 
 
             ' I'm not using Using, sue me 
             Dim b_white As New SolidBrush(Color.FromArgb(189, 204, 222))
-			Dim b_black As New SolidBrush(Color.FromArgb(82, 128, 139))
-			Dim b_highlight As New SolidBrush(Color.FromArgb(64, 201, 222))
+            Dim b_black As New SolidBrush(Color.FromArgb(82, 128, 139))
+            Dim b_highlight As New SolidBrush(Color.FromArgb(64, 201, 222))
 
-			Dim r As Rectangle
+            Dim r As Rectangle
 
             'Draw tiles
             For i_x = 0 To 7
-				For i_y = 0 To 7
+                For i_y = 0 To 7
 
                     ' Using board coordinates
                     r = toRect(i_x, i_y)
 
-					If highlights(i_x, i_y) Then
-						.FillRectangle(b_highlight, r)
-					ElseIf (i_x + 9 * i_y) Mod 2 = 0 Then
-						.FillRectangle(b_white, r)
-					Else
-						.FillRectangle(b_black, r)
-					End If
+                    If highlights(i_x, i_y) Then
+                        .FillRectangle(b_highlight, r)
+                    ElseIf (i_x + 9 * i_y) Mod 2 = 0 Then
+                        .FillRectangle(b_white, r)
+                    Else
+                        .FillRectangle(b_black, r)
+                    End If
 
 
 
                     'check if mouse is hovering over rendered square
                     If r.Contains(PointToClient(MousePosition)) Then
 
-					End If
-				Next
-			Next
+                    End If
+                Next
+            Next
 
             ' Clean up
             b_white.Dispose()
-			b_black.Dispose()
-			b_highlight.Dispose()
+            b_black.Dispose()
+            b_highlight.Dispose()
 
             'Draw column/row labels
             Using b_gold As New SolidBrush(Color.FromArgb(82, 129, 142))
-				For v = 0 To 7
-					Dim sz_n As Size = .MeasureString(v + 1, F).ToSize
-					Dim sz_l As Size = .MeasureString(Convert.ToChar(Convert.ToInt32("A"c) + v - 1).ToString().ToLower, F).ToSize
-					.DrawString(v + 1, F, b_gold, H_DISP - (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
-					.DrawString(v + 1, F, b_gold, H_DISP + (8 * SQR) + (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
+                For v = 0 To 7
+                    Dim sz_n As Size = .MeasureString(v + 1, F).ToSize
+                    Dim sz_l As Size = .MeasureString(Convert.ToChar(Convert.ToInt32("A"c) + v - 1).ToString().ToLower, F).ToSize
+                    .DrawString(v + 1, F, b_gold, H_DISP - (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
+                    .DrawString(v + 1, F, b_gold, H_DISP + (8 * SQR) + (B_THICKNESS / 2) - (sz_n.Width / 2), V_DISP + (SQR * v) + (SQR / 2) - (sz_n.Height / 2))
 
-					.DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString().ToLower, F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP + (SQR * 8) + (B_THICKNESS / 2) - (sz_l.Height / 2))
-					.DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString().ToLower, F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP - (B_THICKNESS / 2) - (sz_l.Height / 2))
-				Next
-			End Using
+                    .DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString().ToLower, F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP + (SQR * 8) + (B_THICKNESS / 2) - (sz_l.Height / 2))
+                    .DrawString(Convert.ToChar(Convert.ToInt32("A"c) + v).ToString().ToLower, F, b_gold, H_DISP + (SQR * v) + (SQR / 2) - (sz_l.Width / 2), V_DISP - (B_THICKNESS / 2) - (sz_l.Height / 2))
+                Next
+            End Using
 
             'Draw pieces
             Dim piece_array() As String = {"", "♟", "♞", "♝", "♜", "♛", "♚"}
-			Dim piece_char As String
+            Dim piece_char As String
 
-			Dim pos As iVector2
+            Dim pos As iVector2
 
-			For v = 0 To 7
-				For h = 0 To 7
+            For v = 0 To 7
+                For h = 0 To 7
 
-					Dim i As Integer = Board.at(h, v)
+                    Dim i As Integer = Board.at(h, v)
 
-					If i <> Board.OFF_BOARD Then
-						pos = Board.display(h, v)
-						.SmoothingMode = SmoothingMode.AntiAlias
-						piece_char = piece_array(Math.Abs(i))
-						If i < 0 Then
-							Using gp As New GraphicsPath()
-								gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
-								.FillPath(Brushes.Black, gp)
-							End Using
-						Else
-							Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
-								gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
-								.DrawPath(p, gp)
-								.FillPath(Brushes.White, gp)
-							End Using
-						End If
-					End If
-				Next
-			Next
-		End With
+                    If i <> Board.OFF_BOARD Then
+                        pos = Board.display(h, v)
+                        .SmoothingMode = SmoothingMode.AntiAlias
+                        piece_char = piece_array(Math.Abs(i))
+                        If i < 0 Then
+                            Using gp As New GraphicsPath()
+                                gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                                .FillPath(Brushes.Black, gp)
+                            End Using
+                        Else
+                            Using gp As New GraphicsPath, p As New Pen(Brushes.Black, 3)
+                                gp.AddString(piece_char, F_Piece.FontFamily, F_Piece.Style, F_Piece.Size + 3, New Point((pos.x * SQR) + B_THICKNESS + 9, (pos.y * SQR) + B_THICKNESS + 3), StringFormat.GenericTypographic)
+                                .DrawPath(p, gp)
+                                .FillPath(Brushes.White, gp)
+                            End Using
+                        End If
+                    End If
+                Next
+            Next
+        End With
 
-	End Sub
-
-
-	Private isSelected As Boolean = False   ' Boolean for whether piece is selected on board
+    End Sub
 
 
+    Private isSelected As Boolean = False   ' Boolean for whether piece is selected on board
 
-	Private Function SelectPiece(position As iVector2)
-		' Check valid side
-		Dim sgn As Integer
-		If Board.WhiteBottom Then
-			sgn = 1
-		Else
-			sgn = -1
-		End If
 
-		' Check if valid piece is at position
-		Dim piece = Board.at(position)
-		If piece AndAlso (piece * sgn) > 0 Then
-			isSelected = True
-		Else
-			isSelected = False
-		End If
 
-	End Function
+    Private Function SelectPiece(position As iVector2)
+        ' Check valid side
+        Dim sgn As Integer
+        If Board.WhiteBottom Then
+            sgn = 1
+        Else
+            sgn = -1
+        End If
 
-	Private Function clear_highlight()
-		' Clears all highlights
-		For i_x = 0 To 7
-			For i_y = 0 To 7
-				highlights(i_x, i_y) = False
-			Next
-		Next
-	End Function
+        ' Check if valid piece is at position
+        Dim piece = Board.at(position)
+        If piece AndAlso (piece * sgn) > 0 Then
+            isSelected = True
+        Else
+            isSelected = False
+        End If
 
-	Private Function highlight_piece(isClick As Boolean)
-		Dim vec As iVector2
-		Dim r As Rectangle
-		Dim sgn As Integer
+    End Function
 
-		For i_x = 0 To 7
-			For i_y = 0 To 7
+    Private Function clear_highlight()
+        ' Clears all highlights
+        For i_x = 0 To 7
+            For i_y = 0 To 7
+                highlights(i_x, i_y) = False
+            Next
+        Next
+    End Function
 
-				vec = Board.display(i_x, i_y)
-				r = toRect(vec)
+    Private Function highlight_piece(isClick As Boolean)
+        Dim vec As iVector2
+        Dim r As Rectangle
+        Dim sgn As Integer
 
-				If r.Contains(PointToClient(MousePosition)) Then
-					Dim possiblemoves As New Movements(Board)
-					possiblemoves = MoveGen.GetMoves(i_x, i_y)
+        For i_x = 0 To 7
+            For i_y = 0 To 7
 
-					If isClick Then
-						' Change selected variable if valid
-						SelectPiece(vec)
-					End If
+                vec = Board.display(i_x, i_y)
+                r = toRect(vec)
 
-					' Highlights actual space
-					highlights(vec.x, vec.y) = True
+                If r.Contains(PointToClient(MousePosition)) Then
+                    Dim possiblemoves As New Movements(Board)
+                    possiblemoves = MoveGen.GetMoves(i_x, i_y)
 
-					'Black/White check
-					If Board.WhiteBottom Then
-						sgn = 1
-					Else
-						sgn = -1
-					End If
+                    If isClick Then
+                        ' Change selected variable if valid
+                        SelectPiece(vec)
+                    End If
 
-					'Drawing in highlights for possible moves of piece
-					If Board.at(i_x, i_y) * sgn > 0 Then
-						If possiblemoves.Count = 0 Then
-							isSelected = False
-							Refresh()
-							Exit Function
-						End If
-						For Each move As Movements.MoveData In possiblemoves
+                    ' Highlights actual space
+                    highlights(vec.x, vec.y) = True
 
-							Debug.Print(move.target.ToString())
-							vec = Board.display(move.target)
-							highlights(vec.x, vec.y) = True
+                    'Black/White check
+                    If Board.WhiteBottom Then
+                        sgn = 1
+                    Else
+                        sgn = -1
+                    End If
 
-						Next
-					End If
-				End If
-			Next
-		Next
-	End Function
+                    'Drawing in highlights for possible moves of piece
+                    If Board.at(i_x, i_y) * sgn > 0 Then
+                        If possiblemoves.Count = 0 Then
+                            isSelected = False
+                            Refresh()
+                            Exit Function
+                        End If
+                        For Each move As Movements.MoveData In possiblemoves
 
-	Private Sub Form1_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
-		'Highlights where mouse is
-		Dim vec As iVector2
+                            Debug.Print(move.target.ToString())
+                            vec = Board.display(move.target)
+                            highlights(vec.x, vec.y) = True
 
-		' Piece selected, stopping normal highlighting
-		If isSelected Then
-			Refresh()
-			Exit Sub
-		End If
+                        Next
+                    End If
+                End If
+            Next
+        Next
+    End Function
 
-		clear_highlight()
+    Private Sub Form1_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
+        'Highlights where mouse is
+        Dim vec As iVector2
 
-		highlight_piece(False)
+        ' Piece selected, stopping normal highlighting
+        If isSelected Then
+            Refresh()
+            Exit Sub
+        End If
 
-		Refresh()
-	End Sub
+        clear_highlight()
 
-	Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
-		Dim r As Rectangle
-		Dim vec As iVector2
-		Dim sgn As Integer
+        highlight_piece(False)
 
-		' Rightclick feature to de-select peice
-		If e.Button = MouseButtons.Right Then
-			clear_highlight()
-			isSelected = False
-			Refresh()
-			Exit Sub
-		End If
+        Refresh()
+    End Sub
 
-		' Piece already selected, stop everything
-		If isSelected Then
-			'Check if clicked on piece is also valid piece
-			clear_highlight()
-			highlight_piece(True)
-			Refresh()
-			Exit Sub
-		End If
+    Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
+        Dim r As Rectangle
+        Dim vec As iVector2
+        Dim sgn As Integer
 
-		clear_highlight()
+        ' Rightclick feature to de-select peice
+        If e.Button = MouseButtons.Right Then
+            clear_highlight()
+            isSelected = False
+            Refresh()
+            Exit Sub
+        End If
 
-		highlight_piece(True)
+        ' Piece already selected, stop everything
+        If isSelected Then
+            'Check if clicked on piece is also valid piece
+            clear_highlight()
+            highlight_piece(True)
+            Refresh()
+            Exit Sub
+        End If
 
-		Refresh()
-	End Sub
+        clear_highlight()
+
+        highlight_piece(True)
+
+        Refresh()
+    End Sub
 End Class

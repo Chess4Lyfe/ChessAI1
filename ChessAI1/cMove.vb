@@ -3,19 +3,12 @@
 Public Class cMove
 
 
-    Private HasNotMoved As New Dictionary(Of String, Boolean)
-
     Private b As Chessboard
 
     Sub New(board As Chessboard)
 
         b = board
 
-        ' Set up all the castle flags
-        HasNotMoved.Add("WQ", True)
-        HasNotMoved.Add("WK", True)
-        HasNotMoved.Add("BQ", True)
-        HasNotMoved.Add("BK", True)
     End Sub
 
     Private AllPossibleMovements(7, 7) As Movements
@@ -184,21 +177,10 @@ Public Class cMove
                     End If
                 Next
 
-            'Case 4
-            '    ' rook castling
-            '    If pos.isAt(7, 7) AndAlso b.at(6, 7) = 0 AndAlso HasNotMoved("WK") Then
-            '        ' White Kingside Castle
-            '        retval.Add(5, 7)
-            '    ElseIf pos.isAt(0, 7) AndAlso b.at(1, 7) = 0 AndAlso b.at(2, 7) = 0 AndAlso HasNotMoved("WQ") Then
-            '        ' White Queenside Castle
-            '        retval.Add(3, 7)
-            '    ElseIf pos.isAt(0, 0) AndAlso b.at(6, 0) = 0 AndAlso HasNotMoved("BK") Then
-            '        'Black Queenside Castle
-            '        retval.Add(5, 0)
-            '    ElseIf pos.isAt(7, 0) AndAlso b.at(1, 0) = 0 AndAlso b.at(2, 0) = 0 AndAlso HasNotMoved("BQ") Then
-            '        ' Black Queenside Castle
-            '        retval.Add(3, 0)
-            '    End If
+            Case 4
+                ' rook castling
+
+
 
             Case 4, 5
                 'rook or queen
@@ -284,27 +266,27 @@ Public Class cMove
                 Next
 
                 ' King Castling
-                If type > 0 Then
-                    ' White castling
-                    If HasNotMoved("WK") AndAlso b.at(5, 7) = 0 AndAlso b.at(6, 7) = 0 Then
-                        'White king-side caslting valid
-                        retval.Add(6, 7)
-                    End If
-                    If HasNotMoved("WQ") AndAlso b.at(1, 7) = 0 AndAlso b.at(2, 7) = 0 AndAlso b.at(3, 7) = 0 Then
-                        'White queen-side caslting valid
-                        retval.Add(2, 7)
-                    End If
-                Else
-                    ' Black castling
-                    If HasNotMoved("BK") AndAlso b.at(1, 0) = 0 AndAlso b.at(2, 0) = 0 Then
-                        'Black king-side caslting valid
-                        retval.Add(1, 0)
-                    End If
-                    If HasNotMoved("BQ") AndAlso b.at(6, 0) = 0 AndAlso b.at(5, 0) = 0 AndAlso b.at(4, 0) = 0 Then
-                        'Black queen-side caslting valid
-                        retval.Add(5, 0)
-                    End If
-                End If
+                'If type > 0 Then
+                '    ' White castling
+                '    If HasNotMoved("WK") AndAlso b.at(5, 7) = 0 AndAlso b.at(6, 7) = 0 Then
+                '        'White king-side caslting valid
+                '        retval.Add(6, 7)
+                '    End If
+                '    If HasNotMoved("WQ") AndAlso b.at(1, 7) = 0 AndAlso b.at(2, 7) = 0 AndAlso b.at(3, 7) = 0 Then
+                '        'White queen-side caslting valid
+                '        retval.Add(2, 7)
+                '    End If
+                'Else
+                '    ' Black castling
+                '    If HasNotMoved("BK") AndAlso b.at(1, 0) = 0 AndAlso b.at(2, 0) = 0 Then
+                '        'Black king-side caslting valid
+                '        retval.Add(1, 0)
+                '    End If
+                '    If HasNotMoved("BQ") AndAlso b.at(6, 0) = 0 AndAlso b.at(5, 0) = 0 AndAlso b.at(4, 0) = 0 Then
+                '        'Black queen-side caslting valid
+                '        retval.Add(5, 0)
+                '    End If
+                'End If
 
         End Select
         Return retval
