@@ -5,7 +5,7 @@ Public Class Form1
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
 
-    Public Board As New Chessboard(False)
+    Public Board As New Chessboard(True)
 
     Private MoveGen As New cMove(Board)
 
@@ -29,6 +29,9 @@ Public Class Form1
 
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+
+
         'Fix form size
         Me.Size = New Size((H_DISP) + (8 * SQR) + B_THICKNESS + 16, (2 * V_DISP) + (8 * SQR) + B_THICKNESS + 9)
 
@@ -71,7 +74,16 @@ Public Class Form1
         Return toRect(vec.x, vec.y)
     End Function
 
+
     Private highlights(7, 7) As Boolean
+    Private Chighlights(7, 7) As Boolean
+    Private selectedPiece As New iVector2
+
+    Private Sub rectangle_Click(sender As Object, e As MouseEventArgs)
+
+    End Sub
+
+
 
     Private Sub Form1_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         With e.Graphics
@@ -88,6 +100,7 @@ Public Class Form1
             Dim b_white As New SolidBrush(Color.FromArgb(189, 204, 222))
             Dim b_black As New SolidBrush(Color.FromArgb(82, 128, 139))
             Dim b_highlight As New SolidBrush(Color.FromArgb(64, 201, 222))
+            Dim b_chighlight As New SolidBrush(Color.FromArgb(153, 255, 51))
 
             Dim r As Rectangle
 
@@ -97,20 +110,15 @@ Public Class Form1
 
                     ' Using board coordinates
                     r = toRect(i_x, i_y)
-
-                    If highlights(i_x, i_y) Then
+                    If Chighlights(i_x, i_y) Then
+                        .FillRectangle(b_chighlight, r)
+                    ElseIf highlights(i_x, i_y) Then
                         .FillRectangle(b_highlight, r)
+
                     ElseIf (i_x + 9 * i_y) Mod 2 = 0 Then
                         .FillRectangle(b_white, r)
                     Else
                         .FillRectangle(b_black, r)
-                    End If
-
-
-
-                    'check if mouse is hovering over rendered square
-                    If r.Contains(PointToClient(MousePosition)) Then
-
                     End If
                 Next
             Next
@@ -119,6 +127,7 @@ Public Class Form1
             b_white.Dispose()
             b_black.Dispose()
             b_highlight.Dispose()
+            b_chighlight.Dispose()
 
             'Draw column/row labels
             Using b_gold As New SolidBrush(Color.FromArgb(82, 129, 142))
@@ -186,6 +195,7 @@ Public Class Form1
         ' Check if valid piece is at position
         Dim piece = Board.at(Board.display(position))
         If (piece * sgn) > 0 Then
+            selectedPiece.store(position.x, position.y)
             isSelected = True
         Else
             isSelected = False
@@ -198,11 +208,19 @@ Public Class Form1
         For i_x = 0 To 7
             For i_y = 0 To 7
                 highlights(i_x, i_y) = False
+                Chighlights(i_x, i_y) = False
             Next
         Next
     End Sub
 
+    Shared king_spots(,) As Integer = {{2, 0}, {6, 0}, {2, 7}, {6, 7}}
+
+
+
     Private Sub highlight_piece(isClick As Boolean)
+
+
+
         Dim vec As iVector2
         Dim r As Rectangle
         Dim sgn As Integer
@@ -215,6 +233,7 @@ Public Class Form1
 
                 If r.Contains(PointToClient(MousePosition)) Then
                     Dim possiblemoves As New Movements(Board)
+                    Debug.Print("At (" + i_x.ToString + ", " + i_y.ToString + ")")
                     possiblemoves = MoveGen.GetMoves(i_x, i_y)
 
                     If isClick Then
@@ -239,6 +258,7 @@ Public Class Form1
                             Refresh()
                             Exit Sub
                         End If
+                        ' Deal with normal moves
                         For Each move As Movements.MoveData In possiblemoves
 
                             Debug.Print(move.target.ToString())
@@ -246,6 +266,14 @@ Public Class Form1
                             highlights(vec.x, vec.y) = True
 
                         Next
+                        ' Deal with castles because the medieval peasants were ASSHOLES that introduced
+                        ' overcomplicated shitty rules like en passant
+                        For Each castler As Movements.CastleData In possiblemoves.castles
+                            Debug.Print("Castling " + castler.castle.ToString)
+                            vec = Board.display(king_spots(castler.castle + 1, 0), king_spots(castler.castle + 1, 1))
+                            chighlights(vec.x, vec.y) = True
+                        Next
+
                     End If
                 End If
             Next
@@ -269,6 +297,20 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_MouseDown(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
+        Dim i_X As Integer = -1
+        Dim i_Y As Integer = -1
+
+
+        If New Rectangle(H_DISP, V_DISP, H_DISP + 8 * SQR, V_DISP + 8 * SQR).Contains(e.Location) Then
+            i_X = (e.Location.X - H_DISP) \ SQR
+            i_Y = (e.Location.Y - V_DISP) \ SQR
+        End If
+
+        Dim here = New iVector2(i_X, i_Y)
+
+
+
+
 
         ' Rightclick feature to de-select peice
         If e.Button = MouseButtons.Right Then
@@ -281,14 +323,53 @@ Public Class Form1
         ' Piece already selected, stop everything
         If isSelected Then
             'Check if clicked on piece is also valid piece
-            clear_highlight()
-            highlight_piece(True)
-            Refresh()
+            If Not selectedPiece.Equals(here) Then
+                If highlights(i_X, i_Y) Then
+
+                    ' Make the Move ay
+                    Board.movePiece(selectedPiece, here)
+                    MoveGen.UpdateMoves()
+                    isSelected = False
+                ElseIf Chighlights(i_X, i_Y) Then
+                    Dim v As iVector2 = Board.display(i_X, i_Y)
+
+                    If v.y = 0 Then
+                        ' black
+                        If v.x = 2 Then
+                            ' queenside
+                            Board.Castle(1)
+
+                        ElseIf v.x = 6 Then
+                            ' kingside
+                            Board.Castle(2)
+
+                        End If
+                    ElseIf v.x = 7 Then
+                        ' white
+                        If v.x = 2 Then
+                            ' queenside
+                            Board.Castle(3)
+
+                        ElseIf v.x = 6 Then
+                            ' kingside
+                            Board.Castle(4)
+
+                        End If
+                    End If
+                    MoveGen.UpdateMoves()
+                    isSelected = False
+                End If
+            Else
+                clear_highlight()
+                highlight_piece(True)
+                Refresh()
+            End If
+
             Exit Sub
         End If
 
         clear_highlight()
-
+        selectedPiece.store(-1, -1)
         highlight_piece(True)
 
         Refresh()

@@ -13,51 +13,59 @@ Public Class Movements
 
         Public target As iVector2 ' the square to move to
         Public virtue As Integer
-        Public castle As Byte ' the castle move type
-        ' 0 = no castle, 1 = w queenside, 2 = w kingside, 3 = b queenside, 4 = b kingside
 
-        Sub New(place As iVector2, value As Integer, Optional castles As Byte = 0)
+        Sub New(place As iVector2)
             target = place
-            castle = castles
             virtue = Me.value(place)
         End Sub
 
-
-        Public Overrides Function ToString() As String
-            Return target.ToString()
-        End Function
 
         ' Weird comparison function thing for storing in BST
         Public Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
             Dim otherMove As MoveData = TryCast(obj, MoveData)
             If otherMove Is Nothing Then
                 Return 1
-            ElseIf castle = 0 Then
-                Return Me.target.Index() - otherMove.target.Index()
             Else
-                Return Me.target.Index() - otherMove.target.Index() +
-                    128 + castle
+                Return Me.target.Index() - otherMove.target.Index()
+
             End If
         End Function
 
         Private pieceValue As Integer() = {0, 1, 3, 3, 5, 9, 9001}
-        ' hash function for sorting by value of move
-        ' "this will get huuuuuuuuuge later" - Donald Trump
+        ' The value of taking a given square
         Private Function value(pos As iVector2) As Integer
-            'TODO: castling properly
-            If castle = 0 Then
-                ' Not a castle move
-                Dim tmp = b.at(pos)
-                Return pieceValue(Math.Abs(b.at(pos)))
+            ' Not a castle move
+            Dim tmp = b.at(pos)
+            Return pieceValue(Math.Abs(b.at(pos)))
+        End Function
 
-            Else
-                Return 6 ' Arbitrary as fuck
-            End If
+
+        Public Overrides Function ToString() As String
+            Return target.ToString()
         End Function
 
 
     End Class
 
+
+    ' Class for storing castle moves
+    Public Class CastleData
+        Implements IComparable
+
+        Public castle As Integer ' the castle move type
+        ' 0 = no castle, 1 = w queenside, 2 = w kingside, 3 = b queenside, 4 = b kingside
+        Public virtue As Integer
+
+        Public Sub New(type As Integer)
+            castle = type
+        End Sub
+
+        Public Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
+            Dim otherCastle As CastleData = TryCast(obj, CastleData)
+            Debug.Print(otherCastle.castle.ToString + "] [" + castle.ToString)
+            Return otherCastle.castle - castle
+        End Function
+    End Class
 
 
 
@@ -70,11 +78,53 @@ Public Class Movements
     End Function
 
 
+
+    ' The main arrays for storing shit
+
     Private movements As SortedSet(Of MoveData)
+    Public castles As SortedSet(Of CastleData)
+
+    Sub New(theBoard As Chessboard)
+        movements = New SortedSet(Of MoveData)
+        castles = New SortedSet(Of CastleData)
+        b = theBoard
+    End Sub
+
+
+    Public Class CompareMoves : Implements IComparer
+
+        ' Alternate comparison object
+        Public Function Compare(ByVal A As Object, ByVal B As Object) As Integer Implements IComparer.Compare
+            Dim M As MoveData = TryCast(A, MoveData)
+            Dim N As MoveData = TryCast(B, MoveData)
+            Return M.virtue - N.virtue ' this may need to be swapped
+        End Function
+    End Class
+
+    Public Sub Add(x As Integer, y As Integer)
+        Dim vec = New iVector2(x, y)
+        If b.OFF_BOARD <> b.at(x, y) Then
+            movements.Add(New MoveData(vec))
+        End If
+    End Sub
+
+    Public Sub Add(vec As iVector2)
+        Add(vec.x, vec.y)
+    End Sub
+
+    Public Sub Castle(castleType As Integer)
+        castles.Add(New CastleData(castleType))
+    End Sub
+
+
+
+
+
+
 
     Public ReadOnly Property Count As Integer Implements ICollection.Count
         Get
-            Return movements.Count
+            Return movements.Count + castles.Count()
         End Get
     End Property
 
@@ -94,34 +144,7 @@ Public Class Movements
         Return movements.GetEnumerator()
     End Function
 
-    Sub New(theBoard As Chessboard)
-        movements = New SortedSet(Of MoveData)
-        b = theBoard
-    End Sub
 
-
-
-    Public Class CompareMoves : Implements IComparer
-
-        ' Alternate comparison object
-        Public Function Compare(ByVal A As Object, ByVal B As Object) As Integer Implements IComparer.Compare
-            Dim M As MoveData = TryCast(A, MoveData)
-            Dim N As MoveData = TryCast(B, MoveData)
-            Return M.virtue - N.virtue ' this may need to be swapped
-        End Function
-    End Class
-
-    Public Sub Add(x As Integer, y As Integer, Optional castles As Byte = 0)
-        Dim vec = New iVector2(x, y)
-        Dim tmp = b.at(vec)
-        If b.OFF_BOARD <> tmp Then
-            movements.Add(New MoveData(vec, tmp, castles))
-        End If
-    End Sub
-
-    Public Sub Add(vec As iVector2)
-        Add(vec.x, vec.y)
-    End Sub
 
 
 
@@ -137,7 +160,7 @@ Public Class Movements
     End Sub
 
     Public Function Contains(vec As iVector2) As Integer
-        Return movements.Contains(New MoveData(vec, 0))
+        Return movements.Contains(New MoveData(vec))
     End Function
 
     Public Function ListByValue() As MoveData()

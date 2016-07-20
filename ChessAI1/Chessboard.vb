@@ -27,7 +27,7 @@
         Return at(v.x, v.y)
     End Function
 
-    ' Rotates (x,y) on the board
+    ' Rotates (x,y) on the board - converts absolute coords to display and back
     Public Function display(x As Integer, y As Integer) As iVector2
         If WhiteBottom Then
             Return New iVector2(x, y)
@@ -41,27 +41,9 @@
     End Function
 
     ' Move Maker
-    Public Sub movePiece(x_i As Integer, y_i As Integer, x_f As Integer, y_f As Integer, castle As Byte)
+    Public Sub movePiece(x_i As Integer, y_i As Integer, x_f As Integer, y_f As Integer)
         board(x_f, y_f) = Me.at(x_i, y_i)
         board(x_i, y_i) = 0
-        Select Case castle
-            Case 1
-                ' white queen
-                board(3, 7) = Me.at(0, 7)
-                board(0, 7) = 0
-            Case 2
-                ' white king
-                board(5, 7) = Me.at(7, 7)
-                board(7, 7) = 0
-            Case 3
-                ' black queen
-                board(3, 0) = Me.at(0, 0)
-                board(0, 0) = 0
-            Case 4
-                'black king
-                board(5, 0) = Me.at(7, 0)
-                board(7, 0) = 0
-        End Select
 
         If y_i = 7 Then
             'white back row
@@ -82,9 +64,40 @@
         End If
     End Sub
 
-    Public Sub movePiece(v_i As iVector2, v_f As iVector2, castle As Byte)
-        movePiece(v_i.x, v_i.y, v_f.x, v_f.y, castle)
+    Public Sub movePiece(v_i As iVector2, v_f As iVector2)
+        movePiece(v_i.x, v_i.y, v_f.x, v_f.y)
     End Sub
+
+    Public Sub Castle(castleType As Integer)
+        Select Case castleType
+            Case 1
+                ' white queenside
+                board(3, 7) = Me.at(0, 7)
+                board(0, 7) = 0
+                HasNotMoved(1) = False
+                HasNotMoved(2) = False
+            Case 2
+                ' white kingside
+                board(5, 7) = Me.at(7, 7)
+                board(7, 7) = 0
+                HasNotMoved(1) = False
+                HasNotMoved(2) = False
+            Case 3
+                ' black queenside
+                board(3, 0) = Me.at(0, 0)
+                board(0, 0) = 0
+                HasNotMoved(3) = False
+                HasNotMoved(4) = False
+            Case 4
+                'black kingside
+                board(5, 0) = Me.at(7, 0)
+                board(7, 0) = 0
+                HasNotMoved(3) = False
+                HasNotMoved(4) = False
+
+        End Select
+    End Sub
+
 
 
     ' Constructor
@@ -98,7 +111,7 @@
             Next
         Next
 
-        'Initialisation conditions
+        ' Setting up the board...
 
         ' Pawns
         For i = 0 To 7
