@@ -74,24 +74,32 @@
                 ' white queenside
                 board(3, 7) = Me.at(0, 7)
                 board(0, 7) = 0
+                board(2, 7) = Me.at(4, 7)
+                board(4, 7) = 0
                 HasNotMoved(1) = False
                 HasNotMoved(2) = False
             Case 2
                 ' white kingside
                 board(5, 7) = Me.at(7, 7)
                 board(7, 7) = 0
+                board(6, 7) = Me.at(4, 7)
+                board(4, 7) = 0
                 HasNotMoved(1) = False
                 HasNotMoved(2) = False
             Case 3
                 ' black queenside
                 board(3, 0) = Me.at(0, 0)
                 board(0, 0) = 0
+                board(2, 0) = Me.at(4, 0)
+                board(4, 0) = 0
                 HasNotMoved(3) = False
                 HasNotMoved(4) = False
             Case 4
                 'black kingside
                 board(5, 0) = Me.at(7, 0)
                 board(7, 0) = 0
+                board(6, 0) = Me.at(4, 0)
+                board(4, 0) = 0
                 HasNotMoved(3) = False
                 HasNotMoved(4) = False
 

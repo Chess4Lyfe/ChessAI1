@@ -44,7 +44,7 @@ Public Class cMove
         If typ = 1 Then
             'pawn
             If type > 0 AndAlso pos.y > 0 Then
-                If pos.y = 6 Then
+                If pos.y = 6 And b.at(pos.x, 5) = 0 Then
                     'white start
                     retval.Add(pos.x, 4)
 
@@ -68,7 +68,7 @@ Public Class cMove
 
             ElseIf pos.y < 7 Then
                 'Black
-                If pos.y = 1 Then
+                If pos.y = 1 And b.at(pos.x, 2) = 0 Then
                     'black start
                     retval.Add(pos.x, 3)
 

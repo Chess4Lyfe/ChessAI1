@@ -5,7 +5,7 @@ Public Class Form1
     Private F As Font = New Font("Segoe UI", 9)
     Private F_Piece As Font = New Font("Segoe UI Symbol", 37)
 
-    Public Board As New Chessboard(True)
+    Public Board As New Chessboard(False)
 
     Private MoveGen As New cMove(Board)
 
@@ -99,8 +99,9 @@ Public Class Form1
             ' I'm not using Using, sue me 
             Dim b_white As New SolidBrush(Color.FromArgb(189, 204, 222))
             Dim b_black As New SolidBrush(Color.FromArgb(82, 128, 139))
-            Dim b_highlight As New SolidBrush(Color.FromArgb(64, 201, 222))
-            Dim b_chighlight As New SolidBrush(Color.FromArgb(153, 255, 51))
+            Dim b_highlight_w As New SolidBrush(Color.FromArgb(64, 201, 222))
+            Dim b_highlight_b As New SolidBrush(Color.FromArgb(44, 171, 192))
+            Dim b_highlight_castle As New SolidBrush(Color.FromArgb(153, 255, 51))
 
             Dim r As Rectangle
 
@@ -110,24 +111,37 @@ Public Class Form1
 
                     ' Using board coordinates
                     r = toRect(i_x, i_y)
-                    If Chighlights(i_x, i_y) Then
-                        .FillRectangle(b_chighlight, r)
-                    ElseIf highlights(i_x, i_y) Then
-                        .FillRectangle(b_highlight, r)
+                    If (i_x + 9 * i_y) Mod 2 = 0 Then
+                        If Chighlights(i_x, i_y) Then
+                            .FillRectangle(b_highlight_castle, r)
+                        ElseIf highlights(i_x, i_y) Then
+                            .FillRectangle(b_highlight_w, r)
+                        Else
+                            .FillRectangle(b_white, r)
+                        End If
 
-                    ElseIf (i_x + 9 * i_y) Mod 2 = 0 Then
-                        .FillRectangle(b_white, r)
                     Else
-                        .FillRectangle(b_black, r)
+                        If Chighlights(i_x, i_y) Then
+                            .FillRectangle(b_highlight_castle, r)
+                        ElseIf highlights(i_x, i_y) Then
+                            .FillRectangle(b_highlight_b, r)
+                        Else
+                            .FillRectangle(b_black, r)
+                        End If
+
                     End If
+
+
+
                 Next
             Next
 
             ' Clean up
             b_white.Dispose()
             b_black.Dispose()
-            b_highlight.Dispose()
-            b_chighlight.Dispose()
+            b_highlight_w.Dispose()
+            b_highlight_b.Dispose()
+            b_highlight_castle.Dispose()
 
             'Draw column/row labels
             Using b_gold As New SolidBrush(Color.FromArgb(82, 129, 142))
@@ -213,7 +227,7 @@ Public Class Form1
         Next
     End Sub
 
-    Shared king_spots(,) As Integer = {{2, 0}, {6, 0}, {2, 7}, {6, 7}}
+    Shared king_spots(,) As Integer = {{2, 7}, {6, 7}, {2, 0}, {6, 0}}
 
 
 
@@ -270,8 +284,8 @@ Public Class Form1
                         ' overcomplicated shitty rules like en passant
                         For Each castler As Movements.CastleData In possiblemoves.castles
                             Debug.Print("Castling " + castler.castle.ToString)
-                            vec = Board.display(king_spots(castler.castle + 1, 0), king_spots(castler.castle + 1, 1))
-                            chighlights(vec.x, vec.y) = True
+                            vec = Board.display(king_spots(castler.castle - 1, 0), king_spots(castler.castle - 1, 1))
+                            Chighlights(vec.x, vec.y) = True
                         Next
 
                     End If
@@ -327,25 +341,14 @@ Public Class Form1
                 If highlights(i_X, i_Y) Then
 
                     ' Make the Move ay
-                    Board.movePiece(selectedPiece, here)
+                    Board.movePiece(Board.display(selectedPiece), Board.display(here))
                     MoveGen.UpdateMoves()
                     isSelected = False
                 ElseIf Chighlights(i_X, i_Y) Then
                     Dim v As iVector2 = Board.display(i_X, i_Y)
-
+                    Debug.Print("Castle move: " + v.ToString)
                     If v.y = 0 Then
                         ' black
-                        If v.x = 2 Then
-                            ' queenside
-                            Board.Castle(1)
-
-                        ElseIf v.x = 6 Then
-                            ' kingside
-                            Board.Castle(2)
-
-                        End If
-                    ElseIf v.x = 7 Then
-                        ' white
                         If v.x = 2 Then
                             ' queenside
                             Board.Castle(3)
@@ -353,6 +356,17 @@ Public Class Form1
                         ElseIf v.x = 6 Then
                             ' kingside
                             Board.Castle(4)
+
+                        End If
+                    ElseIf v.y = 7 Then
+                        ' white
+                        If v.x = 2 Then
+                            ' queenside
+                            Board.Castle(1)
+
+                        ElseIf v.x = 6 Then
+                            ' kingside
+                            Board.Castle(2)
 
                         End If
                     End If
